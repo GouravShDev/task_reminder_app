@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.only(top: 4),
             itemCount: todosList.length,
             itemBuilder: (context, index) {
-              return ToDoCard(todosList[index].title);
+              return ToDoCard(todosList[index].id, todosList[index].title);
             },
           ),
         )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/providers/todo_provider.dart';
-import 'package:todo_list_app/screens/add_todo_screen.dart';
+import '../providers/todo_provider.dart';
+import 'screens/add_edit_todo_screen.dart';
 import './theme_builder.dart';
 import './screens/home.dart';
 
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               )),
           home: Home(),
           routes: {
-            AddToDoScreen.route: (_) => AddToDoScreen(),
+            AddEditToDoScreen.route: (_) => AddEditToDoScreen(),
           },
         ),
       );

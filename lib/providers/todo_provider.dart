@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:todo_list_app/models/todo.dart';
+import '../models/todo.dart';
 
 class ToDoList with ChangeNotifier {
   final List<ToDo> _todos = [
@@ -18,5 +18,9 @@ class ToDoList with ChangeNotifier {
       // TODO: Implement Edit logic
     }
     notifyListeners();
+  }
+
+  ToDo findById(id) {
+    return _todos.firstWhere((element) => element.id == id);
   }
 }

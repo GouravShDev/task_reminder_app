@@ -1,29 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list_app/models/todo.dart';
 
 import '../widgets/date_input.dart';
 import '../widgets/time_input.dart';
-
 import '../providers/todo_provider.dart';
 
-class AddToDoScreen extends StatefulWidget {
-  const AddToDoScreen({Key? key}) : super(key: key);
+class AddEditToDoScreen extends StatefulWidget {
+  const AddEditToDoScreen();
   static const route = '/addToDo';
 
   @override
-  _AddToDoScreenState createState() => _AddToDoScreenState();
+  _AddEditToDoScreenState createState() => _AddEditToDoScreenState();
 }
 
-class _AddToDoScreenState extends State<AddToDoScreen> {
+class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   final _formKey = GlobalKey<FormState>();
-  late TimeOfDay selectedTime;
-  late DateTime selectedDate;
+  late TimeOfDay selectedTime =
+      TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+  late DateTime selectedDate = DateTime.now();
+  ToDo? _task;
   late String _taskName;
+  var _isInit = false;
+  late ToDoList _toDoProvider;
+
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      _toDoProvider = Provider.of<ToDoList>(context, listen: false);
+      final String? taskId =
+          ModalRoute.of(context)!.settings.arguments as String?;
+      print(taskId);
+      if (taskId != null) {
+        _task = _toDoProvider.findById(taskId);
+        print(_task!.title);
+      }
+    }
+    _isInit = true;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final toDoProvider = Provider.of<ToDoList>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -49,6 +68,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       onChanged: (value) {
                         _taskName = value;
                       },
+                      initialValue: (_task != null) ? _task!.title : "",
                       decoration: InputDecoration(
                         labelText: 'Task',
                         labelStyle: TextStyle(fontSize: 16),
@@ -61,12 +81,26 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         return null;
                       },
                     ),
-                    DateInput((DateTime date) {
-                      selectedDate = date;
-                    }),
-                    TimeInput((TimeOfDay time) {
-                      selectedTime = time;
-                    }),
+                    (_task == null)
+                        ? DateInput((DateTime date) {
+                            selectedDate = date;
+                          })
+                        : DateInput(
+                            (DateTime date) {
+                              selectedDate = date;
+                            },
+                            initValue: _task!.date,
+                          ),
+                    (_task == null)
+                        ? TimeInput((TimeOfDay time) {
+                            selectedTime = time;
+                          })
+                        : TimeInput(
+                            (TimeOfDay time) {
+                              selectedTime = time;
+                            },
+                            initValue: _task!.date,
+                          ),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(
@@ -82,8 +116,9 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                                 selectedTime.hour,
                                 selectedTime.minute);
                             print(selectedDateAndTime);
-                            toDoProvider.addItem(
+                            _toDoProvider.addItem(
                                 _taskName, selectedDateAndTime);
+                            Navigator.of(context).pop();
                           }
                         },
                         child: const Text('Done'),

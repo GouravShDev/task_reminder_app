@@ -3,14 +3,15 @@ import 'package:intl/intl.dart';
 
 class DateInput extends StatefulWidget {
   final Function updateDate;
-  const DateInput(this.updateDate);
+  final DateTime? initValue;
+  const DateInput(this.updateDate, {this.initValue});
 
   @override
   _DateInputState createState() => _DateInputState();
 }
 
 class _DateInputState extends State<DateInput> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate = DateTime.now();
   // String _hour = DateTime.now().hour.toString(),
   //     _minute = DateTime.now().hour.toString(),
   //     _time = DateTime.now().hour.toString();
@@ -34,7 +35,12 @@ class _DateInputState extends State<DateInput> {
 
   @override
   void initState() {
-    _dateController.text = DateFormat.yMd().format(DateTime.now());
+    if (widget.initValue != null) {
+      _dateController.text = DateFormat.yMd().format(widget.initValue!);
+      selectedDate = widget.initValue!;
+    } else {
+      _dateController.text = DateFormat.yMd().format(DateTime.now());
+    }
     super.initState();
   }
 

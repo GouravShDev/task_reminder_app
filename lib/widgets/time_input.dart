@@ -2,15 +2,16 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 
 class TimeInput extends StatefulWidget {
-  final updateTime;
-  const TimeInput(Function this.updateTime);
+  final Function updateTime;
+  final DateTime? initValue;
+  const TimeInput(this.updateTime, {this.initValue});
 
   @override
   _TimeInputState createState() => _TimeInputState();
 }
 
 class _TimeInputState extends State<TimeInput> {
-  TimeOfDay selectedTime =
+  late TimeOfDay selectedTime =
       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
 
   late String _hour, _minute, _time;
@@ -38,9 +39,20 @@ class _TimeInputState extends State<TimeInput> {
 
   @override
   void initState() {
-    _timeController.text = formatDate(
-        DateTime(2019, 08, 1, DateTime.now().hour, DateTime.now().minute),
-        [hh, ':', nn, " ", am]).toString();
+    if (widget.initValue != null) {
+      print('not Null');
+      _timeController.text = formatDate(
+          DateTime(
+              2019, 08, 1, widget.initValue!.hour, widget.initValue!.minute),
+          [hh, ':', nn, " ", am]).toString();
+      selectedTime = TimeOfDay(
+          hour: widget.initValue!.hour, minute: widget.initValue!.minute);
+    } else {
+      _timeController.text = formatDate(
+          DateTime(2019, 08, 1, DateTime.now().hour, DateTime.now().minute),
+          [hh, ':', nn, " ", am]).toString();
+    }
+
     super.initState();
   }
 

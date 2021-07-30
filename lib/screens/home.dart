@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_app/screens/add_todo_screen.dart';
-import 'package:todo_list_app/screens/home_screen.dart';
+import 'add_edit_todo_screen.dart';
+import '../screens/home_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
           ? FloatingActionButton(
               onPressed: () {
                 print("ok");
-                Navigator.pushNamed(context, AddToDoScreen.route);
+                Navigator.pushNamed(context, AddEditToDoScreen.route);
               },
               elevation: 0,
               child: Icon(Icons.add),
