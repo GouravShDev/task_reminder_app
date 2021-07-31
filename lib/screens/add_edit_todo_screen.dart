@@ -21,6 +21,9 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   late DateTime selectedDate = DateTime.now();
   ToDo? _task;
   late String _taskName;
+  late String _currentTaskName;
+  late DateTime _currentTaskDueDate;
+  late TimeOfDay _currentTaskDueTime;
   var _isInit = false;
   late ToDoList _toDoProvider;
 
@@ -33,6 +36,14 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
       print(taskId);
       if (taskId != null) {
         _task = _toDoProvider.findById(taskId);
+        _taskName = _task!.title;
+        _currentTaskName = _taskName;
+        selectedDate = _task!.date;
+        selectedTime =
+            TimeOfDay(hour: _task!.date.hour, minute: _task!.date.minute);
+        _currentTaskDueDate = selectedDate;
+        _currentTaskDueTime = selectedTime;
+
         print(_task!.title);
       }
     }
@@ -68,7 +79,8 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                       onChanged: (value) {
                         _taskName = value;
                       },
-                      initialValue: (_task != null) ? _task!.title : "",
+                      initialValue: _task?.title,
+                      // initialValue: _task.title ?? "",
                       decoration: InputDecoration(
                         labelText: 'Task',
                         labelStyle: TextStyle(fontSize: 16),
@@ -81,26 +93,18 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                         return null;
                       },
                     ),
-                    (_task == null)
-                        ? DateInput((DateTime date) {
-                            selectedDate = date;
-                          })
-                        : DateInput(
-                            (DateTime date) {
-                              selectedDate = date;
-                            },
-                            initValue: _task!.date,
-                          ),
-                    (_task == null)
-                        ? TimeInput((TimeOfDay time) {
-                            selectedTime = time;
-                          })
-                        : TimeInput(
-                            (TimeOfDay time) {
-                              selectedTime = time;
-                            },
-                            initValue: _task!.date,
-                          ),
+                    DateInput(
+                      (DateTime date) {
+                        selectedDate = date;
+                      },
+                      initValue: _task?.date,
+                    ),
+                    TimeInput(
+                      (TimeOfDay time) {
+                        selectedTime = time;
+                      },
+                      initValue: _task?.date,
+                    ),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(
@@ -116,8 +120,12 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                                 selectedTime.hour,
                                 selectedTime.minute);
                             print(selectedDateAndTime);
-                            _toDoProvider.addItem(
-                                _taskName, selectedDateAndTime);
+
+                            // Checking if task exists
+                            // If task exists, then update the task
+                            _toDoProvider.addUpdateItem(
+                                _taskName, selectedDateAndTime,
+                                productId: _task?.id);
                             Navigator.of(context).pop();
                           }
                         },

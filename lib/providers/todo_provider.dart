@@ -3,7 +3,7 @@ import '../models/todo.dart';
 
 class ToDoList with ChangeNotifier {
   final List<ToDo> _todos = [
-    ToDo('1', 'Android Development', DateTime.now()),
+    ToDo('1', 'Android Development', DateTime.parse("1969-07-20 20:18:04Z")),
     ToDo('2', 'Web Development', DateTime.now()),
     ToDo('3', 'AI', DateTime.now()),
   ];
@@ -11,11 +11,15 @@ class ToDoList with ChangeNotifier {
   // getter for list of todos
   List<ToDo> get todos => [..._todos];
 
-  void addItem(String name, DateTime date, {String? productId}) {
+  void addUpdateItem(String name, DateTime date, {String? productId}) {
     if (productId == null) {
       _todos.add(ToDo(DateTime.now().toString(), name, date));
     } else {
       // TODO: Implement Edit logic
+      final index = _todos.indexWhere((element) => element.id == productId);
+      print(index);
+      _todos[index] = ToDo(productId, name, date);
+      print(_todos);
     }
     notifyListeners();
   }

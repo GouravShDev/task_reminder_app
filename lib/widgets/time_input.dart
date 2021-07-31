@@ -40,7 +40,6 @@ class _TimeInputState extends State<TimeInput> {
   @override
   void initState() {
     if (widget.initValue != null) {
-      print('not Null');
       _timeController.text = formatDate(
           DateTime(
               2019, 08, 1, widget.initValue!.hour, widget.initValue!.minute),
