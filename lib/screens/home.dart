@@ -33,7 +33,6 @@ class _HomeState extends State<Home> {
       floatingActionButton: (_selectedIndex == 0)
           ? FloatingActionButton(
               onPressed: () {
-                print("ok");
                 Navigator.pushNamed(context, AddEditToDoScreen.route);
               },
               elevation: 0,

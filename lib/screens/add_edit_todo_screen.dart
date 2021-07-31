@@ -21,9 +21,9 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   late DateTime selectedDate = DateTime.now();
   ToDo? _task;
   late String _taskName;
-  late String _currentTaskName;
-  late DateTime _currentTaskDueDate;
-  late TimeOfDay _currentTaskDueTime;
+  String? _currentTaskName;
+  DateTime? _currentTaskDueDate;
+  TimeOfDay? _currentTaskDueTime;
   var _isInit = false;
   late ToDoList _toDoProvider;
 
@@ -33,7 +33,6 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
       _toDoProvider = Provider.of<ToDoList>(context, listen: false);
       final String? taskId =
           ModalRoute.of(context)!.settings.arguments as String?;
-      print(taskId);
       if (taskId != null) {
         _task = _toDoProvider.findById(taskId);
         _taskName = _task!.title;
@@ -43,8 +42,6 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
             TimeOfDay(hour: _task!.date.hour, minute: _task!.date.minute);
         _currentTaskDueDate = selectedDate;
         _currentTaskDueTime = selectedTime;
-
-        print(_task!.title);
       }
     }
     _isInit = true;
@@ -113,19 +110,24 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                         onPressed: () {
                           // Validate returns true if the form is valid, or false otherwise.
                           if (_formKey.currentState!.validate()) {
-                            final selectedDateAndTime = DateTime(
-                                selectedDate.year,
-                                selectedDate.month,
-                                selectedDate.day,
-                                selectedTime.hour,
-                                selectedTime.minute);
-                            print(selectedDateAndTime);
+                            // Check if Task modified
+                            if (_currentTaskName != _taskName ||
+                                _currentTaskDueDate != selectedDate ||
+                                _currentTaskDueTime != selectedTime) {
+                              final selectedDateAndTime = DateTime(
+                                  selectedDate.year,
+                                  selectedDate.month,
+                                  selectedDate.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute);
 
-                            // Checking if task exists
-                            // If task exists, then update the task
-                            _toDoProvider.addUpdateItem(
-                                _taskName, selectedDateAndTime,
-                                productId: _task?.id);
+                              // if task exist update it
+                              // otherwise create a new task
+                              _toDoProvider.addUpdateItem(
+                                  _taskName, selectedDateAndTime,
+                                  productId: _task?.id);
+                            }
+
                             Navigator.of(context).pop();
                           }
                         },

@@ -15,16 +15,18 @@ class ToDoList with ChangeNotifier {
     if (productId == null) {
       _todos.add(ToDo(DateTime.now().toString(), name, date));
     } else {
-      // TODO: Implement Edit logic
       final index = _todos.indexWhere((element) => element.id == productId);
-      print(index);
       _todos[index] = ToDo(productId, name, date);
-      print(_todos);
     }
     notifyListeners();
   }
 
   ToDo findById(id) {
     return _todos.firstWhere((element) => element.id == id);
+  }
+
+  void removeItem(String id) {
+    _todos.removeWhere((element) => element.id == id);
+    notifyListeners();
   }
 }

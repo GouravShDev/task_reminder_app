@@ -11,17 +11,27 @@ class DateInput extends StatefulWidget {
 }
 
 class _DateInputState extends State<DateInput> {
-  late DateTime selectedDate = DateTime.now();
-  // String _hour = DateTime.now().hour.toString(),
-  //     _minute = DateTime.now().hour.toString(),
-  //     _time = DateTime.now().hour.toString();
+  DateTime selectedDate = DateTime.now();
 
   TextEditingController _dateController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.initValue != null) {
+      _dateController.text = DateFormat.yMMMMd().format(widget.initValue!);
+      selectedDate = widget.initValue!;
+    } else {
+      _dateController.text = DateFormat.yMMMMd().format(DateTime.now());
+    }
+    super.initState();
+  }
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: (DateTime.now().compareTo(selectedDate) < 0)
+            ? selectedDate
+            : DateTime.now(),
         initialDatePickerMode: DatePickerMode.day,
         firstDate: DateTime.now(),
         lastDate: DateTime(2025));
@@ -31,17 +41,6 @@ class _DateInputState extends State<DateInput> {
         widget.updateDate(selectedDate);
         _dateController.text = DateFormat.yMMMMd().format(selectedDate);
       });
-  }
-
-  @override
-  void initState() {
-    if (widget.initValue != null) {
-      _dateController.text = DateFormat.yMd().format(widget.initValue!);
-      selectedDate = widget.initValue!;
-    } else {
-      _dateController.text = DateFormat.yMd().format(DateTime.now());
-    }
-    super.initState();
   }
 
   @override

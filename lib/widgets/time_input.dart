@@ -18,6 +18,23 @@ class _TimeInputState extends State<TimeInput> {
 
   TextEditingController _timeController = TextEditingController();
 
+  @override
+  void initState() {
+    if (widget.initValue != null) {
+      _timeController.text = formatDate(
+          DateTime(
+              2019, 08, 1, widget.initValue!.hour, widget.initValue!.minute),
+          [hh, ':', nn, " ", am]).toString();
+      selectedTime = TimeOfDay(
+          hour: widget.initValue!.hour, minute: widget.initValue!.minute);
+    } else {
+      _timeController.text = formatDate(
+          DateTime(2019, 08, 1, DateTime.now().hour, DateTime.now().minute),
+          [hh, ':', nn, " ", am]).toString();
+    }
+    super.initState();
+  }
+
   Future<Null> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -35,24 +52,6 @@ class _TimeInputState extends State<TimeInput> {
             [hh, ':', nn, " ", am]).toString();
         widget.updateTime(selectedTime);
       });
-  }
-
-  @override
-  void initState() {
-    if (widget.initValue != null) {
-      _timeController.text = formatDate(
-          DateTime(
-              2019, 08, 1, widget.initValue!.hour, widget.initValue!.minute),
-          [hh, ':', nn, " ", am]).toString();
-      selectedTime = TimeOfDay(
-          hour: widget.initValue!.hour, minute: widget.initValue!.minute);
-    } else {
-      _timeController.text = formatDate(
-          DateTime(2019, 08, 1, DateTime.now().hour, DateTime.now().minute),
-          [hh, ':', nn, " ", am]).toString();
-    }
-
-    super.initState();
   }
 
   @override
