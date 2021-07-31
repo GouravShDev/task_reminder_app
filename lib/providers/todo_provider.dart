@@ -21,12 +21,20 @@ class ToDoList with ChangeNotifier {
     notifyListeners();
   }
 
+  void addItemWithId(String id, String name, DateTime date) {
+    _todos.add(ToDo(id, name, date));
+    notifyListeners();
+  }
+
   ToDo findById(id) {
     return _todos.firstWhere((element) => element.id == id);
   }
 
-  void removeItem(String id) {
-    _todos.removeWhere((element) => element.id == id);
+  ToDo removeItem(String id) {
+    final index = _todos.indexWhere((element) => element.id == id);
+    final removedItem = _todos[index];
+    _todos.removeAt(index);
     notifyListeners();
+    return removedItem;
   }
 }

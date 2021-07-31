@@ -34,8 +34,11 @@ class _ToDoCardState extends State<ToDoCard> {
               ..scale(0.9))
             : (Matrix4.identity()),
         margin:
-            EdgeInsets.symmetric(horizontal: size.width * 0.03, vertical: 8),
+            EdgeInsets.symmetric(horizontal: size.width * 0.03, vertical: 5),
         decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).textTheme.bodyText2!.color!.withAlpha(15)
+              : Colors.white,
           border: Border.all(color: Colors.grey, width: 1),
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
@@ -45,8 +48,20 @@ class _ToDoCardState extends State<ToDoCard> {
                 setState(() {
                   _isCompleted = !_isCompleted;
                 });
+                // Show snackbar for undo action.
+
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  todoProvider.removeItem(widget.id);
+                  final removedTodo = todoProvider.removeItem(widget.id);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Task Done'),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        todoProvider.addItemWithId(removedTodo.id,
+                            removedTodo.title, removedTodo.date);
+                      },
+                    ),
+                  ));
                 });
               },
               child: (_isCompleted
