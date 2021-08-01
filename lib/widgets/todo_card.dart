@@ -5,9 +5,10 @@ import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';
 
 class ToDoCard extends StatefulWidget {
-  final String id;
+  final int id;
   final String title;
-  const ToDoCard(this.id, this.title, {Key? key}) : super(key: key);
+  final DateTime date;
+  const ToDoCard(this.id, this.title, this.date, {Key? key}) : super(key: key);
 
   @override
   _ToDoCardState createState() => _ToDoCardState();
@@ -18,6 +19,7 @@ class _ToDoCardState extends State<ToDoCard> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.date);
     final size = MediaQuery.of(context).size;
     final todoProvider = Provider.of<ToDoList>(context, listen: false);
     return InkWell(
@@ -57,8 +59,10 @@ class _ToDoCardState extends State<ToDoCard> {
                     action: SnackBarAction(
                       label: 'Undo',
                       onPressed: () {
-                        todoProvider.addItemWithId(removedTodo.id,
-                            removedTodo.title, removedTodo.date);
+                        // todoProvider.addItemWithId(removedTodo.id!,
+                        //     removedTodo.name, removedTodo.date);
+                        todoProvider.addUpdateItem(
+                            removedTodo.name, removedTodo.date);
                       },
                     ),
                   ));

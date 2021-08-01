@@ -1,39 +1,51 @@
 import 'package:flutter/cupertino.dart';
+import 'package:todo_list_app/utils/todo_database.dart';
 import '../models/todo.dart';
 
 class ToDoList with ChangeNotifier {
-  final List<ToDo> _todos = [
-    ToDo('1', 'Android Development', DateTime.parse("1969-07-20 20:18:04Z")),
-    ToDo('2', 'Web Development', DateTime.now()),
-    ToDo('3', 'AI', DateTime.now()),
+  List<ToDo> _todos = [
+    // ToDo(1, 'Android Development', DateTime.parse("1969-07-20 20:18:04Z")),
+    // ToDo('2', 'Web Development', DateTime.now()),
+    // ToDo('3', 'AI', DateTime.now()),
   ];
+  ToDoList() {
+    _init();
+  }
+  ToDoDatabase _databaseHelper = ToDoDatabase();
+
+  _init() async {
+    _todos = await _databaseHelper.getTaskMapList();
+    notifyListeners();
+  }
 
   // getter for list of todos
-  List<ToDo> get todos => [..._todos];
+  List<ToDo> get todos {
+    return [..._todos];
+  }
 
-  void addUpdateItem(String name, DateTime date, {String? productId}) {
-    if (productId == null) {
-      _todos.add(ToDo(DateTime.now().toString(), name, date));
+  void addUpdateItem(String name, DateTime date, {int? id}) async {
+    if (id == null) {
+      final todo =
+          await _databaseHelper.insertTask(ToDo(name: name, date: date));
+      _todos.add(todo);
     } else {
-      final index = _todos.indexWhere((element) => element.id == productId);
-      _todos[index] = ToDo(productId, name, date);
+      final todo = ToDo(name: name, date: date, id: id);
+      await _databaseHelper.updateTask(todo);
+      final index = _todos.indexWhere((element) => element.id == id);
+      _todos[index] = todo;
     }
     notifyListeners();
   }
 
-  void addItemWithId(String id, String name, DateTime date) {
-    _todos.add(ToDo(id, name, date));
-    notifyListeners();
-  }
-
-  ToDo findById(id) {
+  ToDo findById(int id) {
     return _todos.firstWhere((element) => element.id == id);
   }
 
-  ToDo removeItem(String id) {
+  ToDo removeItem(int id) {
     final index = _todos.indexWhere((element) => element.id == id);
     final removedItem = _todos[index];
     _todos.removeAt(index);
+    _databaseHelper.deleteTask(id);
     notifyListeners();
     return removedItem;
   }

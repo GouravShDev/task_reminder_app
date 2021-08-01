@@ -31,11 +31,10 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   void didChangeDependencies() {
     if (!_isInit) {
       _toDoProvider = Provider.of<ToDoList>(context, listen: false);
-      final String? taskId =
-          ModalRoute.of(context)!.settings.arguments as String?;
+      final int? taskId = ModalRoute.of(context)!.settings.arguments as int?;
       if (taskId != null) {
         _task = _toDoProvider.findById(taskId);
-        _taskName = _task!.title;
+        _taskName = _task!.name;
         _currentTaskName = _taskName;
         selectedDate = _task!.date;
         selectedTime =
@@ -76,7 +75,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                       onChanged: (value) {
                         _taskName = value;
                       },
-                      initialValue: _task?.title,
+                      initialValue: _task?.name,
                       // initialValue: _task.title ?? "",
                       decoration: InputDecoration(
                         labelText: 'Task',
@@ -125,7 +124,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                               // otherwise create a new task
                               _toDoProvider.addUpdateItem(
                                   _taskName, selectedDateAndTime,
-                                  productId: _task?.id);
+                                  id: _task?.id);
                             }
 
                             Navigator.of(context).pop();

@@ -65,9 +65,10 @@ class HomeScreen extends StatelessWidget {
               itemCount: todosList.length,
               itemBuilder: (context, index) {
                 return ToDoCard(
-                  todosList[index].id,
-                  todosList[index].title,
-                  key: Key(todosList[index].id),
+                  todosList[index].id!,
+                  todosList[index].name,
+                  todosList[index].date,
+                  key: Key(todosList[index].id.toString()),
                 );
               },
             ),
