@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/todo_provider.dart';
@@ -58,6 +59,8 @@ class _ToDoCardState extends State<ToDoCard> {
                     content: Text('Task Done'),
                     action: SnackBarAction(
                       label: 'Undo',
+                      // textColor: Theme.of(context).accentColor,
+                      textColor: Colors.blue.shade700,
                       onPressed: () {
                         // todoProvider.addItemWithId(removedTodo.id!,
                         //     removedTodo.name, removedTodo.date);
@@ -75,12 +78,27 @@ class _ToDoCardState extends State<ToDoCard> {
                     )
                   : Icon(Icons.circle_outlined))),
           minLeadingWidth: size.width * 0.01,
-          title: Text(
-            widget.title,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(fontSize: size.width * 0.04),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.title,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontSize: size.width * 0.04),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 4),
+                child: Text(
+                  DateFormat('MMM d,h:mm a').format(widget.date),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2!
+                      .copyWith(color: Theme.of(context).accentColor),
+                ),
+              ),
+            ],
           ),
         ),
       ),
