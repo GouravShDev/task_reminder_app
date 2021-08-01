@@ -62,7 +62,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
       body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.centerLeft,
-          margin: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+          margin: const EdgeInsets.all(16),
           child: Column(
             children: [
               Form(
@@ -72,6 +72,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                   children: <Widget>[
                     TextFormField(
                       style: TextStyle(fontSize: 20),
+                      autofocus: true,
                       onChanged: (value) {
                         _taskName = value;
                       },
@@ -103,8 +104,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                     ),
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                          vertical: mediaQuery.size.height * 0.1),
+                      margin: EdgeInsets.symmetric(vertical: 50),
                       child: ElevatedButton(
                         onPressed: () {
                           // Validate returns true if the form is valid, or false otherwise.

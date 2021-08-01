@@ -18,6 +18,26 @@ class ToDoCard extends StatefulWidget {
 class _ToDoCardState extends State<ToDoCard> {
   var _isCompleted = false;
 
+  String _formatDate() {
+    final dateToCheck = widget.date;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
+    final aDate =
+        DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
+    if (aDate == today) {
+      return 'Today' + DateFormat(', h:mm a').format(widget.date);
+    } else if (aDate == yesterday) {
+      return 'Yesterday' + DateFormat(', h:mm a').format(widget.date);
+    } else if (aDate == tomorrow) {
+      return 'Tomorrow' + DateFormat(', h:mm a').format(widget.date);
+    } else {
+      return DateFormat('MMM d, h:mm a').format(widget.date);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.date);
@@ -91,7 +111,8 @@ class _ToDoCardState extends State<ToDoCard> {
               Container(
                 margin: const EdgeInsets.only(top: 4),
                 child: Text(
-                  DateFormat('MMM d,h:mm a').format(widget.date),
+                  // DateFormat('MMM d, h:mm a').format(widget.date),
+                  _formatDate(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyText2!
