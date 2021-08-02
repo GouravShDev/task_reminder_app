@@ -38,11 +38,35 @@ class _ToDoCardState extends State<ToDoCard> {
     }
   }
 
+  void _taskCompleted() {
+    final todoProvider = Provider.of<ToDoList>(context, listen: false);
+    setState(() {
+      _isCompleted = !_isCompleted;
+    });
+    // Show snackbar for undo action.
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      final removedTodo = todoProvider.removeItem(widget.id);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Task Done'),
+        action: SnackBarAction(
+          label: 'Undo',
+          // textColor: Theme.of(context).accentColor,
+          textColor: Colors.blue.shade700,
+          onPressed: () {
+            // todoProvider.addItemWithId(removedTodo.id!,
+            //     removedTodo.name, removedTodo.date);
+            todoProvider.addUpdateItem(removedTodo.name, removedTodo.date);
+          },
+        ),
+      ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.date);
     final size = MediaQuery.of(context).size;
-    final todoProvider = Provider.of<ToDoList>(context, listen: false);
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, AddEditToDoScreen.route,
@@ -66,38 +90,49 @@ class _ToDoCardState extends State<ToDoCard> {
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
         child: ListTile(
-          leading: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _isCompleted = !_isCompleted;
-                });
-                // Show snackbar for undo action.
+          horizontalTitleGap: 0,
+          contentPadding: EdgeInsets.all(4),
+          leading: IconButton(
+            icon: (_isCompleted
+                ? Icon(
+                    Icons.task_alt_rounded,
+                    color: Theme.of(context).primaryColor,
+                  )
+                : Icon(Icons.circle_outlined)),
+            onPressed: _taskCompleted,
+          ),
+          // leading: GestureDetector(
+          //     onTap: () {
+          //       setState(() {
+          //         _isCompleted = !_isCompleted;
+          //       });
+          //       // Show snackbar for undo action.
 
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  final removedTodo = todoProvider.removeItem(widget.id);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Task Done'),
-                    action: SnackBarAction(
-                      label: 'Undo',
-                      // textColor: Theme.of(context).accentColor,
-                      textColor: Colors.blue.shade700,
-                      onPressed: () {
-                        // todoProvider.addItemWithId(removedTodo.id!,
-                        //     removedTodo.name, removedTodo.date);
-                        todoProvider.addUpdateItem(
-                            removedTodo.name, removedTodo.date);
-                      },
-                    ),
-                  ));
-                });
-              },
-              child: (_isCompleted
-                  ? Icon(
-                      Icons.task_alt_rounded,
-                      color: Theme.of(context).primaryColor,
-                    )
-                  : Icon(Icons.circle_outlined))),
-          minLeadingWidth: size.width * 0.01,
+          //       Future.delayed(const Duration(milliseconds: 500), () {
+          //         final removedTodo = todoProvider.removeItem(widget.id);
+          //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //           content: Text('Task Done'),
+          //           action: SnackBarAction(
+          //             label: 'Undo',
+          //             // textColor: Theme.of(context).accentColor,
+          //             textColor: Colors.blue.shade700,
+          //             onPressed: () {
+          //               // todoProvider.addItemWithId(removedTodo.id!,
+          //               //     removedTodo.name, removedTodo.date);
+          //               todoProvider.addUpdateItem(
+          //                   removedTodo.name, removedTodo.date);
+          //             },
+          //           ),
+          //         ));
+          //       });
+          //     },
+          //     child: (_isCompleted
+          //         ? Icon(
+          //             Icons.task_alt_rounded,
+          //             color: Theme.of(context).primaryColor,
+          //           )
+          //         : Icon(Icons.circle_outlined))),
+          // minLeadingWidth: size.width * 0.001,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
