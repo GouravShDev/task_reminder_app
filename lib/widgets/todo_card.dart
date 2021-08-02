@@ -101,38 +101,6 @@ class _ToDoCardState extends State<ToDoCard> {
                 : Icon(Icons.circle_outlined)),
             onPressed: _taskCompleted,
           ),
-          // leading: GestureDetector(
-          //     onTap: () {
-          //       setState(() {
-          //         _isCompleted = !_isCompleted;
-          //       });
-          //       // Show snackbar for undo action.
-
-          //       Future.delayed(const Duration(milliseconds: 500), () {
-          //         final removedTodo = todoProvider.removeItem(widget.id);
-          //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //           content: Text('Task Done'),
-          //           action: SnackBarAction(
-          //             label: 'Undo',
-          //             // textColor: Theme.of(context).accentColor,
-          //             textColor: Colors.blue.shade700,
-          //             onPressed: () {
-          //               // todoProvider.addItemWithId(removedTodo.id!,
-          //               //     removedTodo.name, removedTodo.date);
-          //               todoProvider.addUpdateItem(
-          //                   removedTodo.name, removedTodo.date);
-          //             },
-          //           ),
-          //         ));
-          //       });
-          //     },
-          //     child: (_isCompleted
-          //         ? Icon(
-          //             Icons.task_alt_rounded,
-          //             color: Theme.of(context).primaryColor,
-          //           )
-          //         : Icon(Icons.circle_outlined))),
-          // minLeadingWidth: size.width * 0.001,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -143,16 +111,29 @@ class _ToDoCardState extends State<ToDoCard> {
                     .bodyText1!
                     .copyWith(fontSize: size.width * 0.04),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                child: Text(
-                  // DateFormat('MMM d, h:mm a').format(widget.date),
-                  _formatDate(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(color: Theme.of(context).accentColor),
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 4, right: 4),
+                    child: Icon(
+                      Icons.access_time_outlined,
+                      size: 12,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      // DateFormat('MMM d, h:mm a').format(widget.date),
+                      _formatDate(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Theme.of(context).accentColor),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

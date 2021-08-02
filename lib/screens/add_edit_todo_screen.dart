@@ -26,6 +26,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   TimeOfDay? _currentTaskDueTime;
   var _isInit = false;
   late ToDoList _toDoProvider;
+  bool _isCheckBoxChecked = true;
 
   @override
   void didChangeDependencies() {
@@ -45,6 +46,30 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
     }
     _isInit = true;
     super.didChangeDependencies();
+  }
+
+  void _handleFormSubmission() {
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      // Check if Task modified
+      if (_currentTaskName != _taskName ||
+          _currentTaskDueDate != selectedDate ||
+          _currentTaskDueTime != selectedTime) {
+        final selectedDateAndTime = DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute);
+
+        // if task exist update it
+        // otherwise create a new task
+        _toDoProvider.addUpdateItem(_taskName, selectedDateAndTime,
+            id: _task?.id);
+      }
+
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -103,33 +128,45 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                       initValue: _task?.date,
                     ),
                     Container(
+                      margin: const EdgeInsets.symmetric(vertical: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            value: this._isCheckBoxChecked,
+                            shape: CircleBorder(),
+                            // shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(10)),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                this._isCheckBoxChecked = value!;
+                              });
+                            },
+                          ),
+                          Icon(
+                            (_isCheckBoxChecked)
+                                ? Icons.notifications_active
+                                : Icons.notifications,
+                            color: (_isCheckBoxChecked)
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey,
+                            // color: Theme.of(context).primaryColor,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Alert',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 50),
+                      margin: EdgeInsets.symmetric(vertical: 30),
                       child: ElevatedButton(
-                        onPressed: () {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            // Check if Task modified
-                            if (_currentTaskName != _taskName ||
-                                _currentTaskDueDate != selectedDate ||
-                                _currentTaskDueTime != selectedTime) {
-                              final selectedDateAndTime = DateTime(
-                                  selectedDate.year,
-                                  selectedDate.month,
-                                  selectedDate.day,
-                                  selectedTime.hour,
-                                  selectedTime.minute);
-
-                              // if task exist update it
-                              // otherwise create a new task
-                              _toDoProvider.addUpdateItem(
-                                  _taskName, selectedDateAndTime,
-                                  id: _task?.id);
-                            }
-
-                            Navigator.of(context).pop();
-                          }
-                        },
+                        onPressed: _handleFormSubmission,
                         child: const Text('Done'),
                       ),
                     ),
