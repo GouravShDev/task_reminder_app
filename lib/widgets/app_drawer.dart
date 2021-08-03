@@ -26,7 +26,7 @@ class AppDrawer extends StatelessWidget {
               child: CircleAvatar(
                 backgroundColor: Theme.of(context).canvasColor,
                 radius: 10,
-                // backgroundImage: AssetImage("assets/images/logo.png"),
+                backgroundImage: AssetImage("assets/image/logo.png"),
               ),
               fit: BoxFit.fitHeight,
             )),

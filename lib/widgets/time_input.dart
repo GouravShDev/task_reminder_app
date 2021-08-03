@@ -1,6 +1,8 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 
+import '../theme_builder.dart';
+
 class TimeInput extends StatefulWidget {
   final Function updateTime;
   final DateTime? initValue;
@@ -60,6 +62,8 @@ class _TimeInputState extends State<TimeInput> {
         .textTheme
         .caption!
         .copyWith(fontSize: 16, color: Color.fromRGBO(151, 154, 151, 1));
+
+    final themeProvider = ThemeBuilder.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -101,7 +105,7 @@ class _TimeInputState extends State<TimeInput> {
                 padding: EdgeInsets.only(top: 4),
                 icon: Icon(
                   Icons.access_time,
-                  color: Theme.of(context).accentColor,
+                  color: themeProvider!.materialColor.shade400,
                 ))
           ],
         ),

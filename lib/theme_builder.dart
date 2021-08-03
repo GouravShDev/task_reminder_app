@@ -4,7 +4,7 @@ import './Constants.dart';
 
 class ThemeBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, Brightness brightness,
-      Color uiColor, Color textColor) builder;
+      Color uiColor, Color textColor, MaterialColor materialColor) builder;
 
   ThemeBuilder(this.builder);
 
@@ -22,7 +22,7 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
   Brightness brightness = Brightness.light;
   Color uiColor = Color.fromRGBO(238, 238, 238, 1);
   Color textColor = Colors.black;
-
+  final materialColor = createMaterialColor(Color.fromRGBO(48, 97, 183, 1));
   /*
   * Read the int value Stored in SharedPreferences for theme
   *
@@ -36,7 +36,7 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
     final prefs = await SharedPreferences.getInstance();
     final themeNo = prefs.getInt(baseTheme);
     if (themeNo == null || themeNo == 0) {
-      return CustomTheme.light;
+      return CustomTheme.dark;
     }
     if (themeNo == 1) {
       return CustomTheme.dark;
@@ -75,13 +75,15 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
       case CustomTheme.dark:
         brightness = Brightness.dark;
         uiColor = Color.fromRGBO(33, 33, 33, 1);
-        textColor = Colors.white;
+        // textColor = Colors.white;
+        textColor = Color.fromRGBO(238, 238, 238, 1);
+        // textColor = Colors.red;
         _currentTheme = CustomTheme.dark;
         break;
       case CustomTheme.black:
         brightness = Brightness.dark;
         uiColor = Colors.black;
-        textColor = Colors.white;
+        textColor = Color.fromRGBO(238, 238, 238, 1);
         _currentTheme = CustomTheme.black;
         break;
     }
@@ -111,6 +113,27 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, brightness, uiColor, textColor);
+    return widget.builder(
+        context, brightness, uiColor, textColor, materialColor);
   }
+}
+
+MaterialColor createMaterialColor(Color color) {
+  List strengths = <double>[.05];
+  Map<int, Color> swatch = <int, Color>{};
+  final int r = color.red, g = color.green, b = color.blue;
+
+  for (int i = 1; i < 10; i++) {
+    strengths.add(0.1 * i);
+  }
+  strengths.forEach((strength) {
+    final double ds = 0.5 - strength;
+    swatch[(strength * 1000).round()] = Color.fromRGBO(
+      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+      1,
+    );
+  });
+  return MaterialColor(color.value, swatch);
 }

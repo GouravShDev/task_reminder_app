@@ -23,18 +23,22 @@ class ToDoList with ChangeNotifier {
     return [..._todos];
   }
 
-  void addUpdateItem(String name, DateTime date, {int? id}) async {
+  Future<int> addUpdateItem(String name, DateTime date, {int? id}) async {
+    int taskId;
     if (id == null) {
       final todo =
           await _databaseHelper.insertTask(ToDo(name: name, date: date));
       _todos.add(todo);
+      taskId = todo.id!;
     } else {
       final todo = ToDo(name: name, date: date, id: id);
       await _databaseHelper.updateTask(todo);
       final index = _todos.indexWhere((element) => element.id == id);
       _todos[index] = todo;
+      taskId = id;
     }
     notifyListeners();
+    return taskId;
   }
 
   ToDo findById(int id) {

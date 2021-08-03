@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../theme_builder.dart';
+
 class DateInput extends StatefulWidget {
   final Function updateDate;
   final DateTime? initValue;
@@ -49,6 +51,8 @@ class _DateInputState extends State<DateInput> {
         .textTheme
         .caption!
         .copyWith(fontSize: 16, color: Color.fromRGBO(151, 154, 151, 1));
+
+    final themeProvider = ThemeBuilder.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 30),
       child: Row(
@@ -97,7 +101,7 @@ class _DateInputState extends State<DateInput> {
                         padding: EdgeInsets.only(top: 4),
                         icon: Icon(
                           Icons.calendar_today,
-                          color: Theme.of(context).accentColor,
+                          color: themeProvider!.materialColor.shade400,
                         ))
                   ],
                 ),

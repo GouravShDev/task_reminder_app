@@ -1,7 +1,10 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/models/todo.dart';
 
+import '../models/todo.dart';
+import '../services/notification_service.dart';
+import '../theme_builder.dart';
 import '../widgets/date_input.dart';
 import '../widgets/time_input.dart';
 import '../providers/todo_provider.dart';
@@ -26,7 +29,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   TimeOfDay? _currentTaskDueTime;
   var _isInit = false;
   late ToDoList _toDoProvider;
-  bool _isCheckBoxChecked = true;
+  bool _isNotificationOn = true;
 
   @override
   void didChangeDependencies() {
@@ -48,7 +51,13 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
     super.didChangeDependencies();
   }
 
-  void _handleFormSubmission() {
+  @override
+  void initState() {
+    NotificationService.initalilize();
+    super.initState();
+  }
+
+  void _handleFormSubmission() async {
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
       // Check if Task modified
@@ -64,8 +73,28 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
 
         // if task exist update it
         // otherwise create a new task
-        _toDoProvider.addUpdateItem(_taskName, selectedDateAndTime,
-            id: _task?.id);
+        int curTaskId = await _toDoProvider
+            .addUpdateItem(_taskName, selectedDateAndTime, id: _task?.id);
+        print('new Id ' + curTaskId.toString());
+        // if notification alert is on, schedule notification
+        if (_isNotificationOn) {
+          print('Schedule Notification at : $selectedDateAndTime');
+
+          // Checking if input date and time is not alreay past
+          // Can't schedule current dateTime notification
+          if (selectedDateAndTime.isAfter(DateTime.now())) {
+            NotificationService.scheduledNotification(
+                id: curTaskId,
+                message: formatDate(
+                    DateTime(2019, 08, 1, selectedDateAndTime.hour,
+                        selectedDateAndTime.minute),
+                    [hh, ':', nn, " ", am]).toString(),
+                title: _taskName,
+                scheduledDate: selectedDateAndTime);
+          }
+        } else {
+          NotificationService.cancelScheduledNotification(_task?.id);
+        }
       }
 
       Navigator.of(context).pop();
@@ -75,6 +104,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final themeProvider = ThemeBuilder.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -96,7 +126,10 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     TextFormField(
-                      style: TextStyle(fontSize: 20),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(fontSize: 20),
                       autofocus: true,
                       onChanged: (value) {
                         _taskName = value;
@@ -132,32 +165,30 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Checkbox(
-                            value: this._isCheckBoxChecked,
-                            shape: CircleBorder(),
-                            // shape: RoundedRectangleBorder(
-                            //     borderRadius: BorderRadius.circular(10)),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                this._isCheckBoxChecked = value!;
-                              });
-                            },
-                          ),
-                          Icon(
-                            (_isCheckBoxChecked)
-                                ? Icons.notifications_active
-                                : Icons.notifications,
-                            color: (_isCheckBoxChecked)
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey,
-                            // color: Theme.of(context).primaryColor,
+                          Text(
+                            'Notification Alert ' +
+                                (this._isNotificationOn ? 'On' : 'Off'),
+                            style: TextStyle(fontSize: 18),
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            'Alert',
-                            style: TextStyle(fontSize: 20),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                this._isNotificationOn =
+                                    !this._isNotificationOn;
+                              });
+                            },
+                            icon: Icon(
+                              (_isNotificationOn)
+                                  ? Icons.notifications_active
+                                  : Icons.notifications,
+                              color: (_isNotificationOn)
+                                  ? themeProvider!.materialColor.shade400
+                                  : Colors.grey,
+                              // color: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ],
                       ),

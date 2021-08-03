@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list_app/Constants.dart';
 
 import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';
+import '../theme_builder.dart';
 
 class ToDoCard extends StatefulWidget {
   final int id;
@@ -44,7 +46,7 @@ class _ToDoCardState extends State<ToDoCard> {
       _isCompleted = !_isCompleted;
     });
     // Show snackbar for undo action.
-
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Future.delayed(const Duration(milliseconds: 500), () {
       final removedTodo = todoProvider.removeItem(widget.id);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -66,7 +68,11 @@ class _ToDoCardState extends State<ToDoCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final themeProvider = ThemeBuilder.of(context);
+    final subTitleColor =
+        (themeProvider!.getCurrentTheme() != CustomTheme.light)
+            ? themeProvider!.materialColor.shade300
+            : themeProvider!.materialColor.shade800;
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, AddEditToDoScreen.route,
@@ -100,6 +106,7 @@ class _ToDoCardState extends State<ToDoCard> {
                   )
                 : Icon(Icons.circle_outlined)),
             onPressed: _taskCompleted,
+            color: subTitleColor,
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +126,7 @@ class _ToDoCardState extends State<ToDoCard> {
                     child: Icon(
                       Icons.access_time_outlined,
                       size: 12,
-                      color: Theme.of(context).primaryColor,
+                      color: subTitleColor,
                     ),
                   ),
                   Container(
@@ -130,7 +137,7 @@ class _ToDoCardState extends State<ToDoCard> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2!
-                          .copyWith(color: Theme.of(context).accentColor),
+                          .copyWith(color: subTitleColor),
                     ),
                   ),
                 ],
