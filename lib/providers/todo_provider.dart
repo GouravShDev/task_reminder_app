@@ -8,12 +8,9 @@ class ToDoList with ChangeNotifier {
     // ToDo('2', 'Web Development', DateTime.now()),
     // ToDo('3', 'AI', DateTime.now()),
   ];
-  ToDoList() {
-    _init();
-  }
   ToDoDatabase _databaseHelper = ToDoDatabase();
 
-  _init() async {
+  initialize() async {
     _todos = await _databaseHelper.getTaskMapList();
     notifyListeners();
   }

@@ -102,11 +102,10 @@ class _ToDoCardState extends State<ToDoCard> {
             icon: (_isCompleted
                 ? Icon(
                     Icons.task_alt_rounded,
-                    color: Theme.of(context).primaryColor,
                   )
                 : Icon(Icons.circle_outlined)),
             onPressed: _taskCompleted,
-            color: subTitleColor,
+            // color: subTitleColor,
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

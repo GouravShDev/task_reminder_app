@@ -1,19 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/screens/add_edit_todo_screen.dart';
-import 'package:todo_list_app/widgets/app_drawer.dart';
-import '../widgets/todo_card.dart';
+import '../models/todo.dart';
 import '../providers/todo_provider.dart';
+import '../screens/add_edit_todo_screen.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/todo_panel.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen();
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<ToDo> _dueTodos = [];
+  List<ToDo> _todayTodos = [];
+  List<ToDo> _upcomingTodos = [];
+
+  void _distTodos(List<ToDo> todos) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
+    todos.forEach((todo) {
+      if (todo.date.isBefore(now)) {
+        _dueTodos.add(todo);
+      } else if (todo.date.isAfter(today) && todo.date.isBefore(tomorrow)) {
+        _todayTodos.add(todo);
+      } else {
+        _upcomingTodos.add(todo);
+      }
+    });
+    // sort the list by date
+    _dueTodos.sort((a, b) => a.date.compareTo(b.date));
+    _todayTodos.sort((a, b) => a.date.compareTo(b.date));
+    _upcomingTodos.sort((a, b) => a.date.compareTo(b.date));
+    // set expandTile to open or not
+    // if list empty then set to false
+  }
+
   @override
   Widget build(BuildContext context) {
     // get ToDoList from the provider
-    final todosList = Provider.of<ToDoList>(context).todos;
-    // sort the list by date
-    todosList.sort((a, b) => a.date.compareTo(b.date));
     // .sort((a, b) => a.date.compareTo(b.date));
+    final todoList = Provider.of<ToDoList>(context).todos;
+
+    // Distribute the todos into the 3 lists
+    // dueTodos, todayTodos, upcomingTodos
+    _distTodos(todoList);
 
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
@@ -42,38 +77,11 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, AddEditToDoScreen.route);
         },
-        elevation: 0,
+        // elevation: 0,
         child: Icon(Icons.add),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(16),
-            child: Text(
-              "Today's Tasks",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.w600),
-              textAlign: TextAlign.start,
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.only(top: 4),
-              itemCount: todosList.length,
-              itemBuilder: (context, index) {
-                return ToDoCard(
-                  todosList[index].id!,
-                  todosList[index].name,
-                  todosList[index].date,
-                  key: Key(todosList[index].id.toString()),
-                );
-              },
-            ),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: ToDoPanel(_dueTodos, _todayTodos, _upcomingTodos),
       ),
     );
   }
