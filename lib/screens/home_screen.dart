@@ -14,11 +14,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<ToDo> _dueTodos = [];
-  List<ToDo> _todayTodos = [];
-  List<ToDo> _upcomingTodos = [];
+  late List<ToDo> _dueTodos;
+  late List<ToDo> _todayTodos;
+  late List<ToDo> _upcomingTodos;
 
   void _distTodos(List<ToDo> todos) {
+    _dueTodos = [];
+    _todayTodos = [];
+    _upcomingTodos = [];
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
