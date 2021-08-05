@@ -17,35 +17,17 @@ class SettingScreen extends StatelessWidget {
     if (themeName == 'light') {
       ThemeBuilder.of(context)!.changeTheme(CustomTheme.light);
       // Storing Selection in sharePref
-      await prefs.setInt(baseTheme, 0);
+      prefs.setInt(baseTheme, 0);
     } else if (themeName == 'dark') {
       ThemeBuilder.of(context)!.changeTheme(CustomTheme.dark);
       // Storing Selection in sharePref
-      await prefs.setInt(baseTheme, 1);
+      prefs.setInt(baseTheme, 1);
     } else {
       ThemeBuilder.of(context)!.changeTheme(CustomTheme.black);
       // Storing Selection in sharePref
-      await prefs.setInt(baseTheme, 2);
+      prefs.setInt(baseTheme, 2);
     }
   }
-
-  // /*
-  // * Logic for getting different Box border
-  // * Color according to current theme
-  // */
-  //
-  // Color getBoxColor(String theme, dynamic themeBuilderState) {
-  //   if (themeBuilderState.getCurrentTheme().toString().contains(theme)) {
-  //     return Colors.red;
-  //   } else if (themeBuilderState
-  //       .getCurrentTheme()
-  //       .toString()
-  //       .contains('light')) {
-  //     return Colors.black;
-  //   } else {
-  //     return Colors.white;
-  //   }
-  // }
 
   /*
   * Logic for getting different Icon
@@ -61,48 +43,6 @@ class SettingScreen extends StatelessWidget {
     }
   }
 
-  /*_buildCustomBox(
-      {String themeName, BuildContext ctx, dynamic themeBuilderState}) {
-    return InkWell(
-      onTap: () {
-        _changeTheme(context: ctx, themeName: themeName);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: themeBuilderState.uiColor,
-          border: Border.all(
-              color: getBoxColor(themeName, themeBuilderState), width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 2.0, // soften the shadow
-              // spreadRadius: 5.0, //extend the shadow
-              offset: Offset(
-                4.0, // Move to right 10  horizontally
-                4.0, // Move to bottom 10 Vertically
-              ),
-            ),
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        padding: EdgeInsets.all(4),
-        margin: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Text(
-              themeName,
-              style: TextStyle(fontSize: 22),
-            ),
-            SizedBox(
-              width: 6,
-            ),
-            Icon(getIcon(themeName)),
-          ],
-        ),
-      ),
-    );
-  }
-*/
   _buildDivider() {
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -110,7 +50,7 @@ class SettingScreen extends StatelessWidget {
       ),
       width: double.infinity,
       height: 1.0,
-      color: Colors.grey.shade400,
+      color: Colors.grey.shade800,
     );
   }
 
@@ -136,11 +76,17 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _theme = ThemeBuilder.of(context);
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    final mediaQuery = MediaQuery.of(context);
+    final _width = mediaQuery.size.width;
+    final _height = mediaQuery.size.height;
+    bool _isChecked = false;
+    final subTextStyles = TextStyle(fontSize: _width * 0.035);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text("Settings",
+            style: Theme.of(context).textTheme.headline6!.copyWith(
+                fontSize: mediaQuery.size.width * 0.05,
+                fontWeight: FontWeight.bold)),
       ),
       body: Column(
         children: [
@@ -152,7 +98,10 @@ class SettingScreen extends StatelessWidget {
             children: [
               Text(
                 "Choose Your Style",
-                style: TextStyle(fontSize: _width * 0.045),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontSize: _width * 0.045),
               ),
             ],
           ),
@@ -181,6 +130,38 @@ class SettingScreen extends StatelessWidget {
             height: _height * 0.025,
           ),
           _buildDivider(),
+          Container(
+            margin:
+                EdgeInsets.symmetric(horizontal: _width * 0.03, vertical: 30),
+            alignment: Alignment.topLeft,
+            child: Text(
+              'General',
+              style: Theme.of(context).textTheme.headline6!,
+            ),
+          ),
+
+          Container(
+            margin:
+                EdgeInsets.symmetric(horizontal: _width * 0.06, vertical: 4),
+            alignment: Alignment.topLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Show Confirmation on Complete Task',
+                    style: subTextStyles),
+                IconButton(
+                  icon: Icon(Icons.task_alt_outlined),
+                  // icon: (_isChecked
+                  //     ? Icon(
+                  //         Icons.task_alt_rounded,
+                  //       )
+                  //     : Icon(Icons.circle_outlined)),
+                  onPressed: () {},
+                  color: Theme.of(context).textTheme.headline6!.color,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -33,9 +33,10 @@ class MyApp extends StatelessWidget {
                   bodyText1: TextStyle(color: _textColor),
                   bodyText2: TextStyle(color: _textColor),
                   headline6: TextStyle(
-                      color: (_brightness == Brightness.dark)
-                          ? materialColor.shade300
-                          : materialColor.shade500)),
+                    color: (_brightness == Brightness.dark)
+                        ? materialColor.shade300
+                        : materialColor.shade500,
+                  )),
               primarySwatch: materialColor,
               appBarTheme: AppBarTheme(
                 color: _uiColor,

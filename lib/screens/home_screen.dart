@@ -6,53 +6,11 @@ import '../screens/add_edit_todo_screen.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/todo_panel.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen();
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late List<ToDo> _dueTodos;
-  late List<ToDo> _todayTodos;
-  late List<ToDo> _upcomingTodos;
-
-  void _distTodos(List<ToDo> todos) {
-    _dueTodos = [];
-    _todayTodos = [];
-    _upcomingTodos = [];
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
-
-    todos.forEach((todo) {
-      if (todo.date.isBefore(now)) {
-        _dueTodos.add(todo);
-      } else if (todo.date.isAfter(today) && todo.date.isBefore(tomorrow)) {
-        _todayTodos.add(todo);
-      } else {
-        _upcomingTodos.add(todo);
-      }
-    });
-    // sort the list by date
-    _dueTodos.sort((a, b) => a.date.compareTo(b.date));
-    _todayTodos.sort((a, b) => a.date.compareTo(b.date));
-    _upcomingTodos.sort((a, b) => a.date.compareTo(b.date));
-    // set expandTile to open or not
-    // if list empty then set to false
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // get ToDoList from the provider
-    // .sort((a, b) => a.date.compareTo(b.date));
-    final todoList = Provider.of<ToDoList>(context).todos;
-
-    // Distribute the todos into the 3 lists
-    // dueTodos, todayTodos, upcomingTodos
-    _distTodos(todoList);
-
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
       ),
       body: SingleChildScrollView(
-        child: ToDoPanel(_dueTodos, _todayTodos, _upcomingTodos),
+        child: ToDoPanel(),
       ),
     );
   }

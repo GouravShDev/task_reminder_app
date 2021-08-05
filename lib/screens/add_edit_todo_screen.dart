@@ -109,9 +109,10 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
       appBar: AppBar(
         title: Text(
           'Create Task',
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: mediaQuery.size.width * 0.06),
+          style: Theme.of(context).textTheme.headline6!.copyWith(
+                fontSize: mediaQuery.size.width * 0.05,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ),
       body: SingleChildScrollView(

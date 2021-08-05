@@ -71,8 +71,8 @@ class _ToDoCardState extends State<ToDoCard> {
     final themeProvider = ThemeBuilder.of(context);
     final subTitleColor =
         (themeProvider!.getCurrentTheme() != CustomTheme.light)
-            ? themeProvider!.materialColor.shade300
-            : themeProvider!.materialColor.shade800;
+            ? themeProvider.materialColor.shade300
+            : themeProvider.materialColor.shade800;
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, AddEditToDoScreen.route,
@@ -90,7 +90,7 @@ class _ToDoCardState extends State<ToDoCard> {
             EdgeInsets.symmetric(horizontal: size.width * 0.03, vertical: 5),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).textTheme.bodyText2!.color!.withAlpha(15)
+              ? Theme.of(context).textTheme.bodyText2!.color!.withAlpha(25)
               : Colors.white,
           border: Border.all(color: Colors.grey, width: 1),
           borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -125,7 +125,9 @@ class _ToDoCardState extends State<ToDoCard> {
                     child: Icon(
                       Icons.access_time_outlined,
                       size: 12,
-                      color: subTitleColor,
+                      color: (widget.date.isAfter(DateTime.now()))
+                          ? subTitleColor
+                          : Theme.of(context).errorColor,
                     ),
                   ),
                   Container(
@@ -133,10 +135,10 @@ class _ToDoCardState extends State<ToDoCard> {
                     child: Text(
                       // DateFormat('MMM d, h:mm a').format(widget.date),
                       _formatDate(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(color: subTitleColor),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color: (widget.date.isAfter(DateTime.now()))
+                              ? subTitleColor
+                              : Theme.of(context).errorColor),
                     ),
                   ),
                 ],
