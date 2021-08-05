@@ -39,18 +39,18 @@ class _ToDoPanelState extends State<ToDoPanel> {
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
 
     todos.forEach((todo) {
-      if (todo.date.isBefore(now)) {
+      if (todo.due.isBefore(now)) {
         _dueTodos.add(todo);
-      } else if (todo.date.isAfter(today) && todo.date.isBefore(tomorrow)) {
+      } else if (todo.due.isAfter(today) && todo.due.isBefore(tomorrow)) {
         _todayTodos.add(todo);
       } else {
         _upcomingTodos.add(todo);
       }
     });
     // sort the list by date
-    _dueTodos.sort((a, b) => a.date.compareTo(b.date));
-    _todayTodos.sort((a, b) => a.date.compareTo(b.date));
-    _upcomingTodos.sort((a, b) => a.date.compareTo(b.date));
+    // _dueTodos.sort((a, b) => a.due.compareTo(b.due));
+    // _todayTodos.sort((a, b) => a.due.compareTo(b.due));
+    // _upcomingTodos.sort((a, b) => a.due.compareTo(b.due));
     // set expandTile to open or not
     // if list empty then set to false
   }
@@ -83,7 +83,7 @@ class _ToDoPanelState extends State<ToDoPanel> {
               return ToDoCard(
                 todos[index].id!,
                 todos[index].name,
-                todos[index].date,
+                todos[index].due,
                 key: Key(todos[index].id.toString()),
               );
             },

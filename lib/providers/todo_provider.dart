@@ -12,6 +12,9 @@ class ToDoList with ChangeNotifier {
 
   initialize() async {
     _todos = await _databaseHelper.getTaskMapList();
+    _todos.forEach((element) {
+      print(element.name);
+    });
     notifyListeners();
   }
 
@@ -20,15 +23,16 @@ class ToDoList with ChangeNotifier {
     return [..._todos];
   }
 
-  Future<int> addUpdateItem(String name, DateTime date, {int? id}) async {
+  Future<int> addUpdateItem(String name, DateTime date, int hasAlert,
+      {int? id}) async {
     int taskId;
     if (id == null) {
-      final todo =
-          await _databaseHelper.insertTask(ToDo(name: name, date: date));
+      final todo = await _databaseHelper
+          .insertTask(ToDo(name: name, due: date, hasAlert: hasAlert));
       _todos.add(todo);
       taskId = todo.id!;
     } else {
-      final todo = ToDo(name: name, date: date, id: id);
+      final todo = ToDo(name: name, due: date, id: id);
       await _databaseHelper.updateTask(todo);
       final index = _todos.indexWhere((element) => element.id == id);
       _todos[index] = todo;

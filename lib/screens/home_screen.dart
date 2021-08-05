@@ -42,6 +42,7 @@ class HomeScreen extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('$message'),
+                  duration: Duration(milliseconds: 2000),
                 ),
               );
             }

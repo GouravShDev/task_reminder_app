@@ -18,15 +18,20 @@ class AddEditToDoScreen extends StatefulWidget {
 }
 
 class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
+  // Key for Form widget
   final _formKey = GlobalKey<FormState>();
+  // Intializing default values for date and Time input widget
   late TimeOfDay selectedTime =
       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
   late DateTime selectedDate = DateTime.now();
+
+  // Current Values in case of edit
   ToDo? _task;
   late String _taskName;
   String? _currentTaskName;
   DateTime? _currentTaskDueDate;
   TimeOfDay? _currentTaskDueTime;
+
   var _isInit = false;
   late ToDoList _toDoProvider;
   bool _isNotificationOn = true;
@@ -40,11 +45,12 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
         _task = _toDoProvider.findById(taskId);
         _taskName = _task!.name;
         _currentTaskName = _taskName;
-        selectedDate = _task!.date;
+        selectedDate = _task!.due;
         selectedTime =
-            TimeOfDay(hour: _task!.date.hour, minute: _task!.date.minute);
+            TimeOfDay(hour: _task!.due.hour, minute: _task!.due.minute);
         _currentTaskDueDate = selectedDate;
         _currentTaskDueTime = selectedTime;
+        _isNotificationOn = (_task!.hasAlert == 1);
       }
     }
     _isInit = true;
@@ -73,8 +79,9 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
 
         // if task exist update it
         // otherwise create a new task
-        int curTaskId = await _toDoProvider
-            .addUpdateItem(_taskName, selectedDateAndTime, id: _task?.id);
+        int curTaskId = await _toDoProvider.addUpdateItem(
+            _taskName, selectedDateAndTime, _isNotificationOn ? 1 : 0,
+            id: _task?.id);
         print('new Id ' + curTaskId.toString());
         // if notification alert is on, schedule notification
         if (_isNotificationOn) {
@@ -156,13 +163,13 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                       (DateTime date) {
                         selectedDate = date;
                       },
-                      initValue: _task?.date,
+                      initValue: _task?.due,
                     ),
                     TimeInput(
                       (TimeOfDay time) {
                         selectedTime = time;
                       },
-                      initValue: _task?.date,
+                      initValue: _task?.due,
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 30),
@@ -199,7 +206,9 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                     ),
                     Container(
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 30),
+                      margin: EdgeInsets.symmetric(
+                        vertical: 20,
+                      ),
                       child: ElevatedButton(
                         onPressed: _handleFormSubmission,
                         child: const Text('Done'),

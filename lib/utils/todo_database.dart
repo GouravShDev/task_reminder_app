@@ -37,7 +37,7 @@ class ToDoDatabase {
     CREATE TABLE $tableTasks(
       ${ToDoFields.colId} $idType,
       ${ToDoFields.colName} $nameType,
-      ${ToDoFields.colDate} $dateType
+      ${ToDoFields.colDue} $dateType
     )  
     ''');
   }
@@ -65,7 +65,7 @@ class ToDoDatabase {
   // Fetch Operation : Get all ToDo from Database
   Future<List<ToDo>> getTaskMapList() async {
     Database db = await this.database;
-    final orderBy = '${ToDoFields.colDate} DESC';
+    final orderBy = '${ToDoFields.colDue} ASC';
 
     final result = await db.query(tableTasks, orderBy: orderBy);
     return result.map((e) => ToDo.fromDatabaseMap(e)).toList();

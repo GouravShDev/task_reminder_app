@@ -51,6 +51,7 @@ class _ToDoCardState extends State<ToDoCard> {
       final removedTodo = todoProvider.removeItem(widget.id);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Task Done'),
+        duration: Duration(milliseconds: 2000),
         action: SnackBarAction(
           label: 'Undo',
           // textColor: Theme.of(context).accentColor,
@@ -58,7 +59,8 @@ class _ToDoCardState extends State<ToDoCard> {
           onPressed: () {
             // todoProvider.addItemWithId(removedTodo.id!,
             //     removedTodo.name, removedTodo.date);
-            todoProvider.addUpdateItem(removedTodo.name, removedTodo.date);
+            todoProvider.addUpdateItem(
+                removedTodo.name, removedTodo.due, removedTodo.hasAlert);
           },
         ),
       ));
@@ -75,6 +77,7 @@ class _ToDoCardState extends State<ToDoCard> {
             : themeProvider.materialColor.shade800;
     return InkWell(
       onTap: () {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         Navigator.pushNamed(context, AddEditToDoScreen.route,
                 arguments: widget.id)
             .then((message) {
@@ -83,6 +86,7 @@ class _ToDoCardState extends State<ToDoCard> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('$message'),
+                duration: Duration(milliseconds: 2000),
               ),
             );
           }
