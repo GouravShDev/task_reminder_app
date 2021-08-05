@@ -96,8 +96,11 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
           NotificationService.cancelScheduledNotification(_task?.id);
         }
       }
-
-      Navigator.of(context).pop();
+      print('reached');
+      final snackBarMessage = (_task == null)
+          ? 'Task added Successfully'
+          : 'Task updated Successfully';
+      Navigator.of(context).pop(snackBarMessage);
     }
   }
 

@@ -76,7 +76,17 @@ class _ToDoCardState extends State<ToDoCard> {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, AddEditToDoScreen.route,
-            arguments: widget.id);
+                arguments: widget.id)
+            .then((message) {
+          if (message != null) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('$message'),
+              ),
+            );
+          }
+        });
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 400),

@@ -76,6 +76,7 @@ class _ToDoPanelState extends State<ToDoPanel> {
 
           child: ListView.builder(
             shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
             padding: EdgeInsets.only(top: 5, bottom: 10),
             itemCount: todos.length,
             itemBuilder: (context, index) {

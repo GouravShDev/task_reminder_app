@@ -36,7 +36,16 @@ class HomeScreen extends StatelessWidget {
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, AddEditToDoScreen.route);
+          Navigator.pushNamed(context, AddEditToDoScreen.route).then((message) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            if (message != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$message'),
+                ),
+              );
+            }
+          });
         },
         // elevation: 0,
         child: Icon(Icons.add),
