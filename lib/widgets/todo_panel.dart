@@ -15,7 +15,6 @@ class ToDoPanel extends StatefulWidget {
 }
 
 class _ToDoPanelState extends State<ToDoPanel> {
-  late List<bool> _isOpen;
   late List<ToDo> _dueTodos;
   late List<ToDo> _todayTodos;
   late List<ToDo> _upcomingTodos;
@@ -77,7 +76,7 @@ class _ToDoPanelState extends State<ToDoPanel> {
 
           child: ListView.builder(
             shrinkWrap: true,
-            padding: EdgeInsets.symmetric(vertical: 15),
+            padding: EdgeInsets.only(top: 5, bottom: 10),
             itemCount: todos.length,
             itemBuilder: (context, index) {
               return ToDoCard(
