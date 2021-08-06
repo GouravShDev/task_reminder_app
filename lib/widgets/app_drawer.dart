@@ -33,16 +33,16 @@ class AppDrawer extends StatelessWidget {
             SizedBox(
               height: 18,
             ),
-            ListTile(
-              leading: Icon(Icons.assignment_outlined),
-              title: Text(
-                'Task List',
-                style: listTileTextStyle,
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.assignment_outlined),
+            //   title: Text(
+            //     'Task List',
+            //     style: listTileTextStyle,
+            //   ),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //   },
+            // ),
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings', style: listTileTextStyle),

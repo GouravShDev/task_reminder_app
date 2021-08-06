@@ -5,6 +5,7 @@ enum CustomTheme {
 }
 
 /*
-* Constants to be used throughout the app
+* Constants to be used throughout the app for shared Preferences
 */
-String baseTheme = 'theme';
+const String SETTING_THEME = 'theme';
+const String SETTING_CONFIRMATION_ON_COMP_TASK = 'ConfirmOnCompTask';

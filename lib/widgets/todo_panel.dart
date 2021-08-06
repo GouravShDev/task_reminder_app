@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/Constants.dart';
+import 'package:todo_list_app/constants.dart';
 
 import '../theme_builder.dart';
 import '../widgets/todo_card.dart';

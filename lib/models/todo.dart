@@ -36,12 +36,18 @@ class ToDo {
         ToDoFields.colId: id,
         ToDoFields.colName: name,
         ToDoFields.colDue: due.toIso8601String(),
+        ToDoFields.colAlert: hasAlert,
+        ToDoFields.colCompleted: isFinished,
       };
 
   static ToDo fromDatabaseMap(Map<String, Object?> map) => ToDo(
       id: map[ToDoFields.colId] as int,
       name: map[ToDoFields.colName] as String,
-      due: DateTime.parse(map[ToDoFields.colDue] as String));
+      hasAlert: map[ToDoFields.colAlert] as int,
+      isFinished: map[ToDoFields.colCompleted] as int,
+      due: DateTime.parse(
+        map[ToDoFields.colDue] as String,
+      ));
 
   void setAlert(bool hasAlert) {
     this.hasAlert = hasAlert ? 1 : 0;

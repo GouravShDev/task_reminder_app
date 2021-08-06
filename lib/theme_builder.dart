@@ -34,7 +34,7 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
   */
   Future<CustomTheme> _getThemeFromSharePref() async {
     final prefs = await SharedPreferences.getInstance();
-    final themeNo = prefs.getInt(baseTheme);
+    final themeNo = prefs.getInt(SETTING_THEME);
     if (themeNo == null || themeNo == 0) {
       return CustomTheme.dark;
     }

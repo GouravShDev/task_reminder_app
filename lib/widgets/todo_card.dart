@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list_app/Constants.dart';
 
 import '../providers/todo_provider.dart';
@@ -19,6 +20,7 @@ class ToDoCard extends StatefulWidget {
 
 class _ToDoCardState extends State<ToDoCard> {
   var _isCompleted = false;
+  bool _isConfirmatinOnComp = false;
 
   String _formatDate() {
     final dateToCheck = widget.date;
@@ -65,6 +67,48 @@ class _ToDoCardState extends State<ToDoCard> {
         ),
       ));
     });
+  }
+
+  void _showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Are You Sure?"),
+          content: Text("Completed Task Great ^_^"),
+          actions: [
+            TextButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.pop(context);
+                _taskCompleted();
+              },
+            ),
+          ],
+        );
+        ;
+      },
+    );
+  }
+
+  void _getSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isConfirmatinOnComp =
+          prefs.getInt(SETTING_CONFIRMATION_ON_COMP_TASK) == 1;
+    });
+  }
+
+  @override
+  void initState() {
+    _getSetting();
+    super.initState();
   }
 
   @override
@@ -118,7 +162,13 @@ class _ToDoCardState extends State<ToDoCard> {
                     Icons.task_alt_rounded,
                   )
                 : Icon(Icons.circle_outlined)),
-            onPressed: _taskCompleted,
+            onPressed: () {
+              if (_isConfirmatinOnComp) {
+                _showAlertDialog();
+              } else {
+                _taskCompleted();
+              }
+            },
             // color: subTitleColor,
           ),
           title: Column(

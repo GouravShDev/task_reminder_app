@@ -32,7 +32,7 @@ class ToDoList with ChangeNotifier {
       _todos.add(todo);
       taskId = todo.id!;
     } else {
-      final todo = ToDo(name: name, due: date, id: id);
+      final todo = ToDo(name: name, due: date, id: id, hasAlert: hasAlert);
       await _databaseHelper.updateTask(todo);
       final index = _todos.indexWhere((element) => element.id == id);
       _todos[index] = todo;

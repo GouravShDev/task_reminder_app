@@ -33,11 +33,14 @@ class ToDoDatabase {
     final idType = "INTEGER PRIMARY KEY AUTOINCREMENT";
     final nameType = "TEXT NOT NULL";
     final dateType = "TEXT";
+    final flagType = "INTEGER NOT NULL";
     await db.execute('''
     CREATE TABLE $tableTasks(
       ${ToDoFields.colId} $idType,
       ${ToDoFields.colName} $nameType,
-      ${ToDoFields.colDue} $dateType
+      ${ToDoFields.colDue} $dateType,
+      ${ToDoFields.colAlert} $flagType,
+      ${ToDoFields.colCompleted} $flagType
     )  
     ''');
   }

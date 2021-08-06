@@ -31,6 +31,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
   String? _currentTaskName;
   DateTime? _currentTaskDueDate;
   TimeOfDay? _currentTaskDueTime;
+  bool? _currentNotificationBool;
 
   var _isInit = false;
   late ToDoList _toDoProvider;
@@ -45,12 +46,14 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
         _task = _toDoProvider.findById(taskId);
         _taskName = _task!.name;
         _currentTaskName = _taskName;
+        _currentNotificationBool = _task!.hasAlert == 1;
         selectedDate = _task!.due;
         selectedTime =
             TimeOfDay(hour: _task!.due.hour, minute: _task!.due.minute);
         _currentTaskDueDate = selectedDate;
         _currentTaskDueTime = selectedTime;
         _isNotificationOn = (_task!.hasAlert == 1);
+        print(_task!.hasAlert);
       }
     }
     _isInit = true;
@@ -69,7 +72,8 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
       // Check if Task modified
       if (_currentTaskName != _taskName ||
           _currentTaskDueDate != selectedDate ||
-          _currentTaskDueTime != selectedTime) {
+          _currentTaskDueTime != selectedTime ||
+          _currentNotificationBool != _isNotificationOn) {
         final selectedDateAndTime = DateTime(
             selectedDate.year,
             selectedDate.month,
@@ -102,12 +106,14 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
         } else {
           NotificationService.cancelScheduledNotification(_task?.id);
         }
+        print('reached');
+        final snackBarMessage = (_task == null)
+            ? 'Task added Successfully'
+            : 'Task updated Successfully';
+        Navigator.of(context).pop(snackBarMessage);
+      } else {
+        Navigator.pop(context);
       }
-      print('reached');
-      final snackBarMessage = (_task == null)
-          ? 'Task added Successfully'
-          : 'Task updated Successfully';
-      Navigator.of(context).pop(snackBarMessage);
     }
   }
 
@@ -207,7 +213,7 @@ class _AddEditToDoScreenState extends State<AddEditToDoScreen> {
                     Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(
-                        vertical: 20,
+                        vertical: 30,
                       ),
                       child: ElevatedButton(
                         onPressed: _handleFormSubmission,
