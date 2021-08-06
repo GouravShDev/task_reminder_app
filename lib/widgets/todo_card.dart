@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list_app/constants.dart';
+import 'package:todo_list_app/providers/settings_provider.dart';
 
 import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';
@@ -20,7 +21,7 @@ class ToDoCard extends StatefulWidget {
 
 class _ToDoCardState extends State<ToDoCard> {
   var _isCompleted = false;
-  bool _isConfirmatinOnComp = false;
+  // bool _isConfirmatinOnComp = false;
 
   String _formatDate() {
     final dateToCheck = widget.date;
@@ -97,28 +98,30 @@ class _ToDoCardState extends State<ToDoCard> {
     );
   }
 
-  void _getSetting() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isConfirmatinOnComp =
-          prefs.getInt(SETTING_CONFIRMATION_ON_COMP_TASK) == 1;
-    });
-  }
+  // void _getSetting() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     _isConfirmatinOnComp =
+  //         prefs.getInt(SETTING_CONFIRMATION_ON_COMP_TASK) == 1;
+  //   });
+  // }
 
   @override
   void initState() {
-    _getSetting();
+    // _getSetting();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('ToDo Card Reubuils');
     final size = MediaQuery.of(context).size;
     final themeProvider = ThemeBuilder.of(context);
     final subTitleColor =
         (themeProvider!.getCurrentTheme() != CustomTheme.light)
             ? themeProvider.materialColor.shade300
             : themeProvider.materialColor.shade800;
+    final proviedSettings = Provider.of<Settings>(context);
     return InkWell(
       onTap: () {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -156,19 +159,23 @@ class _ToDoCardState extends State<ToDoCard> {
         child: ListTile(
           horizontalTitleGap: 0,
           contentPadding: EdgeInsets.all(4),
-          leading: IconButton(
-            icon: (_isCompleted
-                ? Icon(
-                    Icons.task_alt_rounded,
-                  )
-                : Icon(Icons.circle_outlined)),
-            onPressed: () {
-              if (_isConfirmatinOnComp) {
-                _showAlertDialog();
-              } else {
-                _taskCompleted();
-              }
-            },
+          leading: ValueListenableBuilder<bool>(
+            valueListenable: proviedSettings.confirmOnComp,
+            builder: (context, value, _) => IconButton(
+              icon: (_isCompleted
+                  ? Icon(
+                      Icons.task_alt_rounded,
+                    )
+                  : Icon(Icons.circle_outlined)),
+              onPressed: () {
+                if (value) {
+                  _showAlertDialog();
+                } else {
+                  _taskCompleted();
+                }
+              },
+            ),
+
             // color: subTitleColor,
           ),
           title: Column(

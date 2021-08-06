@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list_app/providers/settings_provider.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/setting_screen.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (_) => ToDoList(),
           ),
+          Provider<Settings>(create: (context) => Settings()),
         ],
         child: MaterialApp(
           title: 'To Do List',

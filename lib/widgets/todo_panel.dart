@@ -110,7 +110,7 @@ class _ToDoPanelState extends State<ToDoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    print('build Runs');
+    print('toDo Panels Rebuilds');
     // get ToDoList from the provider
     final todoList = Provider.of<ToDoList>(context).todos;
 
