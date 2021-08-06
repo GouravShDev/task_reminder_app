@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './Constants.dart';
+import '../constants.dart';
 
 class ThemeBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, Brightness brightness,

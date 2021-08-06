@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_list_app/Constants.dart';
+import 'package:todo_list_app/constants.dart';
 
 import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';

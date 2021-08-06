@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Constants.dart';
+import '../constants.dart';
 import '../widgets/theme_chooser.dart';
 
 class SettingScreen extends StatefulWidget {

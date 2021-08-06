@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/animatedButton.dart';
 import '../theme_builder.dart';
-import '../Constants.dart';
+import '../constants.dart';
 
 class ThemeChooser extends StatelessWidget {
   const ThemeChooser({Key? key}) : super(key: key);
