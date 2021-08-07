@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/todo.dart';
-import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/todo_panel.dart';

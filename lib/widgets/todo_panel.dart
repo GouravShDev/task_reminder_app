@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/constants.dart';
 
 import '../theme_builder.dart';
 import '../widgets/todo_card.dart';
@@ -113,7 +112,6 @@ class _ToDoPanelState extends State<ToDoPanel> {
     print('toDo Panels Rebuilds');
     // get ToDoList from the provider
     final todoList = Provider.of<ToDoList>(context).todos;
-    final mediaQuery = MediaQuery.of(context);
 
     // Distribute the todos into the 3 lists
     // dueTodos, todayTodos, upcomingTodos
