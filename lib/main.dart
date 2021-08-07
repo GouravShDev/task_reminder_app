@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_app/providers/settings_provider.dart';
+import 'package:device_preview/device_preview.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/setting_screen.dart';
@@ -10,7 +12,10 @@ import '../screens/add_edit_todo_screen.dart';
 import './theme_builder.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(DevicePreview(
+    builder: (context) => MyApp(),
+    enabled: !kReleaseMode,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -31,6 +36,8 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'To Do List',
+          locale: DevicePreview.locale(context),
+          builder: DevicePreview.appBuilder,
           theme: ThemeData(
               canvasColor: _uiColor,
               brightness: _brightness,

@@ -51,9 +51,7 @@ class HomeScreen extends StatelessWidget {
         // elevation: 0,
         child: Icon(Icons.add),
       ),
-      body: SingleChildScrollView(
-        child: ToDoPanel(),
-      ),
+      body: ToDoPanel(),
     );
   }
 }

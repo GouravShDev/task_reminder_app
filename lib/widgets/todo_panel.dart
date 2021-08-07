@@ -113,21 +113,30 @@ class _ToDoPanelState extends State<ToDoPanel> {
     print('toDo Panels Rebuilds');
     // get ToDoList from the provider
     final todoList = Provider.of<ToDoList>(context).todos;
+    final mediaQuery = MediaQuery.of(context);
 
     // Distribute the todos into the 3 lists
     // dueTodos, todayTodos, upcomingTodos
     _distTodos(todoList);
-    return Padding(
-        padding: const EdgeInsets.only(top: 20.0, left: 4.0, right: 4.0),
-        child: Column(
-          children: [
-            if (_dueTodos.length > 0)
-              _buildTodoTile(title: "OverDue Task", todos: _dueTodos),
-            if (_todayTodos.length > 0)
-              _buildTodoTile(title: "Today's Task", todos: _todayTodos),
-            if (_upcomingTodos.length > 0)
-              _buildTodoTile(title: "Upcoming Task", todos: _upcomingTodos),
-          ],
-        ));
+    return (_dueTodos.length == 0 &&
+            _todayTodos.length == 0 &&
+            _upcomingTodos.length == 0)
+        ? Center(child: Text('Tap on + button to add task'))
+        : SingleChildScrollView(
+            child: Padding(
+                padding:
+                    const EdgeInsets.only(top: 20.0, left: 4.0, right: 4.0),
+                child: Column(
+                  children: [
+                    if (_dueTodos.length > 0)
+                      _buildTodoTile(title: "OverDue Task", todos: _dueTodos),
+                    if (_todayTodos.length > 0)
+                      _buildTodoTile(title: "Today's Task", todos: _todayTodos),
+                    if (_upcomingTodos.length > 0)
+                      _buildTodoTile(
+                          title: "Upcoming Task", todos: _upcomingTodos),
+                  ],
+                )),
+          );
   }
 }
