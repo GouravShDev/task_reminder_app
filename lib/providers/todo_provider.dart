@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:todo_list_app/utils/todo_database.dart';
+import '../utils/todo_database.dart';
 import '../models/todo.dart';
 
 class ToDoList with ChangeNotifier {

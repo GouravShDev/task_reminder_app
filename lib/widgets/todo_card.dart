@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list_app/constants.dart';
-import 'package:todo_list_app/providers/settings_provider.dart';
+import '../constants.dart';
+import '../providers/settings_provider.dart';
+import '../services/notification_service.dart';
 
 import '../providers/todo_provider.dart';
 import '../screens/add_edit_todo_screen.dart';
@@ -51,6 +52,9 @@ class _ToDoCardState extends State<ToDoCard> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Future.delayed(const Duration(milliseconds: 500), () {
       final removedTodo = todoProvider.removeItem(widget.id);
+      if (removedTodo.hasAlert == 1) {
+        NotificationService.cancelScheduledNotification(widget.id);
+      }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Task Done'),
         duration: Duration(milliseconds: 2000),
@@ -63,6 +67,10 @@ class _ToDoCardState extends State<ToDoCard> {
             //     removedTodo.name, removedTodo.date);
             todoProvider.addUpdateItem(
                 removedTodo.name, removedTodo.due, removedTodo.hasAlert);
+            if (removedTodo.hasAlert == 1) {
+              NotificationService.scheduledNotification(
+                  id: removedTodo.id!, scheduledDate: removedTodo.due);
+            }
           },
         ),
       ));

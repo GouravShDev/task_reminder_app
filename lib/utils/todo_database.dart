@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';
-import 'package:todo_list_app/models/todo.dart';
+import '../models/todo.dart';
 
 class ToDoDatabase {
   static ToDoDatabase? _dbHelper;

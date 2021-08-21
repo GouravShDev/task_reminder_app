@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_app/screens/setting_screen.dart';
+import '../screens/setting_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
