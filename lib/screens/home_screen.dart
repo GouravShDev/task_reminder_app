@@ -23,12 +23,12 @@ class HomeScreen extends StatelessWidget {
             fit: BoxFit.fitWidth,
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.search),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: Icon(Icons.search),
+        //   ),
+        // ],
       ),
       drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
