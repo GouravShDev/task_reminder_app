@@ -1,70 +1,86 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/settings/provider/settings_provider.dart';
+import 'features/todo/presentation/pages/todo_overview_page.dart';
+import 'injection_container.dart' as injector;
 import 'package:provider/provider.dart';
-import 'providers/settings_provider.dart';
-import 'package:device_preview/device_preview.dart';
 
-import '../screens/home_screen.dart';
-import '../screens/setting_screen.dart';
-import '../providers/todo_provider.dart';
-import '../screens/add_edit_todo_screen.dart';
-import 'theme_builder.dart';
+import 'router/app_router.dart';
+
+import 'features/settings/theme/bloc/theme_bloc.dart';
+import 'features/todo/presentation/bloc/todo_bloc.dart';
 
 void main() {
-  runApp(DevicePreview(
-    builder: (context) => MyApp(),
-    enabled: !kReleaseMode,
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  injector.init();
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final AppRouter _appRouter = AppRouter();
+  late Future<void> _initDependencies;
+
+  @override
+  void initState() {
+    _initDependencies = injector.locator.allReady();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return ThemeBuilder(
-        (context, _brightness, _uiColor, _textColor, materialColor) {
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => ToDoList(),
-          ),
-          Provider<Settings>(create: (context) => Settings()),
-        ],
-        child: MaterialApp(
-          title: 'To Do List',
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
-          theme: ThemeData(
-              canvasColor: _uiColor,
-              brightness: _brightness,
-              floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  backgroundColor: materialColor.shade500),
-              textTheme: TextTheme(
-                  bodyText1: TextStyle(color: _textColor),
-                  bodyText2: TextStyle(color: _textColor),
-                  headline6: TextStyle(
-                    color: (_brightness == Brightness.dark)
-                        ? materialColor.shade300
-                        : materialColor.shade500,
-                  )),
-              primarySwatch: materialColor,
-              appBarTheme: AppBarTheme(
-                color: _uiColor,
-                textTheme: TextTheme(headline6: TextStyle(color: _textColor)),
-                iconTheme: IconThemeData(color: _textColor),
-                elevation: 0,
-              )),
-          home: HomeScreen(),
-          routes: {
-            AddEditToDoScreen.route: (_) => AddEditToDoScreen(),
-            SettingScreen.route: (_) => SettingScreen(),
-          },
-        ),
-      );
-    });
+    return FutureBuilder(
+      future: _initDependencies,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Provider<Settings>(
+            create: (context) => injector.locator<Settings>(),
+            child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => injector.locator<TodoBloc>(),
+                  ),
+                  BlocProvider(
+                    create: (context) => injector.locator<ThemeBloc>(),
+                  ),
+                ],
+                child: BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return MaterialApp(
+                      title: 'ToDo List',
+                      theme: state.themeData,
+                      onGenerateRoute: _appRouter.onGenerateRoute,
+                      home: TodoOverviewPage(),
+                    );
+                  },
+                )),
+          );
+          // )
+          // return BlocProvider(
+          //   create: (context) => injector.locator<TodoBloc>(),
+          //   child: MaterialApp(
+          //     title: 'ToDo List',
+          //     theme: ThemeData(
+          //       primarySwatch: Colors.blue,
+          //     ),
+          //     onGenerateRoute: _appRouter.onGenerateRoute,
+          //     home: TodoOverviewPage(),
+          //   ),
+          // );
+        } else {
+          // ToDo: Add loading screen
+          return Container();
+        }
+      },
+    );
   }
 }
