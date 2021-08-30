@@ -45,10 +45,10 @@ class _DateInputState extends State<DateInput> {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context)
-        .textTheme
-        .caption!
-        .copyWith(fontSize: 16, color: Theme.of(context).primaryColor);
+    // final labelStyle = Theme.of(context)
+    //     .textTheme
+    //     .caption!
+    //     .copyWith(fontSize: 16, color: Theme.of(context).primaryColor);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 30),

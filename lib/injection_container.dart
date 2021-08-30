@@ -7,7 +7,7 @@ import 'core/utils/constants.dart';
 import 'core/utils/date_formatter.dart';
 import 'core/utils/todo_filter.dart';
 import 'features/settings/provider/settings_provider.dart';
-import 'features/settings/theme/bloc/theme_bloc.dart';
+// import 'features/settings/theme/bloc/theme_bloc.dart';
 import 'features/todo/data/datasources/local/database/app_database.dart';
 import 'features/todo/data/datasources/local/todo_database_data_source.dart';
 import 'features/todo/data/repositories/todos_repository_impl.dart';
@@ -28,7 +28,7 @@ void init() {
       toggleTodoStatus: locator(),
       notificationService: locator()));
 
-  locator.registerFactory<ThemeBloc>(() => ThemeBloc(locator()));
+  // locator.registerFactory<ThemeBloc>(() => ThemeBloc(locator()));
 
   // ? UseCases
   locator.registerLazySingleton<GetTodosList>(() => GetTodosList(locator()));

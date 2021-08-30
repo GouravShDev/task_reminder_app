@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/exceptions.dart';
-import '../datasources/local/todo_database_data_source.dart';
 
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/repositories/todos_repository.dart';
+import '../datasources/local/todo_database_data_source.dart';
 
 class TodoRepositoryImpl implements TodosRepository {
   final TodoDatabaseDataSource databaseDataSource;

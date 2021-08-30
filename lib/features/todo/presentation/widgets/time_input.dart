@@ -56,10 +56,10 @@ class _TimeInputState extends State<TimeInput> {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context)
-        .textTheme
-        .caption!
-        .copyWith(fontSize: 16, color: Theme.of(context).primaryColor);
+    // final labelStyle = Theme.of(context)
+    //     .textTheme
+    //     .caption!
+    //     .copyWith(fontSize: 16, color: Theme.of(context).primaryColor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

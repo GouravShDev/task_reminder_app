@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../provider/settings_provider.dart';
 import 'package:provider/provider.dart';
 import '../../theme/app_themes.dart';
-import '../../theme/bloc/theme_bloc.dart';
 import 'animated_button.dart';
 
 class ThemeChooser extends StatefulWidget {
@@ -74,7 +73,7 @@ class _ThemeChooserState extends State<ThemeChooser> {
           values: ['Light', 'Dark', 'Black'],
           onToggleCallback: (AppTheme theme) {
             proviedSettings.setTheme(theme);
-            context.read<ThemeBloc>().add(ThemeChanged(theme: theme));
+            // context.read<ThemeBloc>().add(ThemeChanged(theme: theme));
           },
         ),
         SizedBox(
