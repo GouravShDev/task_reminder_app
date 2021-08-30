@@ -1,13 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:todo_list/core/usecases/usecase.dart';
 import 'package:todo_list/features/todo/domain/entities/todo.dart';
+import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart';
 import 'package:todo_list/features/todo/domain/usecases/add_todo.dart';
 
 import 'toggle_todo_status_test.mocks.dart';
 
-// @GenerateMocks([TodosRepository])
+@GenerateMocks([TodosRepository])
 void main() {
   late AddTodoToDb usecase;
   late MockTodosRepository mockTodosRepository;

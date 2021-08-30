@@ -54,7 +54,7 @@ class _TodoCardState extends State<TodoCard> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Are You Sure?"),
-          content: Text("Completed Task Great ^_^"),
+          content: Text("Completed Task Great (^_^)"),
           actions: [
             TextButton(
               child: Text("No"),

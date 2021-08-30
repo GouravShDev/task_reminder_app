@@ -43,7 +43,7 @@ final Map<AppTheme, ThemeData> appThemeData = {
       color: appSwatch.shade500,
     )),
     primarySwatch: appSwatch,
-    primaryColor: appSwatch.shade400,
+    primaryColor: appSwatch.shade300,
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: appSwatch.shade500),
     appBarTheme: AppBarTheme(

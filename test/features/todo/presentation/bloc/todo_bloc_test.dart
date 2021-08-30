@@ -16,7 +16,6 @@ import 'package:todo_list/features/todo/presentation/bloc/todo_bloc.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 import 'package:todo_list/injection_container.dart' as injector;
-import '../../domain/usecases/toggle_todo_status_test.mocks.dart';
 import 'todo_bloc_test.mocks.dart';
 
 @GenerateMocks(

@@ -66,7 +66,7 @@ class _TimeInputState extends State<TimeInput> {
       children: [
         Text(
           'Choose Time',
-          style: labelStyle,
+          style: Theme.of(context).textTheme.headline2!.copyWith(fontSize: 16),
         ),
         Row(
           children: [

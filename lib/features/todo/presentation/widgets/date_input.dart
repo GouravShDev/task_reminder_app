@@ -61,7 +61,10 @@ class _DateInputState extends State<DateInput> {
               children: [
                 Text(
                   'Choose Date',
-                  style: labelStyle,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontSize: 16),
                 ),
                 Row(
                   children: [
