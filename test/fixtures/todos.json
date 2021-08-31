@@ -3,5 +3,7 @@
     "name" : "test",
     "due" : "2021-08-21T13:00:00.000",
     "isDone": 0,
-    "hasAlert": 1
+    "hasAlert": 1,
+    "repeatMode": 0,
+    "taskListId": 0
 }

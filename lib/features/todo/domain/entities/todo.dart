@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
+import 'package:todo_list/features/todo/domain/entities/task_list.dart';
 
 import '../../../../core/utils/constants.dart';
 
@@ -11,6 +12,20 @@ class ToDo extends Equatable {
   final DateTime due;
   final bool isDone;
   final bool hasAlert;
+  final int repeatMode;
+  @ForeignKey(childColumns: [
+    kTaskColId,
+    kTaskColName,
+    kTaskColDue,
+    kTaskColCompleted,
+    kTaskColAlert,
+    kTaskColRepeatMode,
+    kTaskColTaskListId,
+  ], parentColumns: [
+    'id',
+    'name'
+  ], entity: TaskList)
+  final int taskListId;
 
   ToDo({
     this.id,
@@ -18,6 +33,8 @@ class ToDo extends Equatable {
     required this.due,
     this.isDone = false,
     required this.hasAlert,
+    this.repeatMode = 0,
+    this.taskListId = 0,
   });
 
   @override
@@ -28,6 +45,8 @@ class ToDo extends Equatable {
       due,
       isDone,
       hasAlert,
+      repeatMode,
+      taskListId,
     ];
   }
 
@@ -37,6 +56,8 @@ class ToDo extends Equatable {
     DateTime? due,
     bool? isDone,
     bool? hasAlert,
+    int? repeatMode,
+    int? taskListId,
   }) {
     return ToDo(
       id: id ?? this.id,
@@ -44,6 +65,8 @@ class ToDo extends Equatable {
       due: due ?? this.due,
       isDone: isDone ?? this.isDone,
       hasAlert: hasAlert ?? this.hasAlert,
+      repeatMode: repeatMode ?? this.repeatMode,
+      taskListId: taskListId ?? this.taskListId,
     );
   }
 }

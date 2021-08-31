@@ -21,12 +21,16 @@ void main() {
       due: DateTime.now().add(Duration(seconds: 100)),
       isDone: true,
       hasAlert: true,
+      repeatMode: 0,
+      taskListId: 0,
     );
     final tFutureTodo = ToDoModel(
         id: 1,
         name: 'name',
         due: DateTime.now().add(Duration(days: 1)),
         isDone: true,
+        repeatMode: 0,
+        taskListId: 0,
         hasAlert: true);
     final tOverDueTodo =
         ToDoModel.fromDatabaseJson(json.decode(Fixture('todos.json')));

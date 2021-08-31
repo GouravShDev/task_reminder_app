@@ -12,7 +12,9 @@ void main() {
       due: DateTime.parse("2021-08-21T13:00:00.000"),
       hasAlert: true,
       isDone: false,
-      name: 'test');
+      name: 'test',
+      repeatMode: 0,
+      taskListId: 0);
 
   test('should be a subclass of ToDo entity', () {
     // assert
@@ -40,7 +42,9 @@ void main() {
         "name": "test",
         "due": "2021-08-21T13:00:00.000",
         "isDone": 0,
-        "hasAlert": 1
+        "hasAlert": 1,
+        "repeatMode": 0,
+        "taskListId": 0
       };
       expect(result, expectedMap);
     });

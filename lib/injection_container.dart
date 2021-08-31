@@ -1,3 +1,4 @@
+import 'package:floor/floor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -70,8 +71,35 @@ void init() {
 
   // ! External
   // ? Database
-  locator.registerSingletonAsync<AppDatabase>(
-      () async => $FloorAppDatabase.databaseBuilder(kDatabaseName).build());
+  locator.registerSingletonAsync<AppDatabase>(() async {
+    final db = $FloorAppDatabase
+        .databaseBuilder(kDatabaseName)
+        .addMigrations([
+          Migration(1, 2, (db) async {
+            await db.execute(
+                '''CREATE TABLE IF NOT EXISTS `temp` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, 
+                `name` TEXT NOT NULL, `due` TEXT NOT NULL,
+                 `isDone` INTEGER NOT NULL,
+                 `hasAlert` INTEGER NOT NULL,
+                 `repeatMode` INTEGER NOT NULL DEFAULT 0,
+                 `taskListId` INTEGER NOT NULL DEFAULT 0),
+                 "FOREIGN KEY (taskListId) REFERENCES $kTaskListTableName (id) ON DELETE NO ACTION ON UPDATE NO ACTION,''');
+            await db.execute(
+                'INSERT INTO temp (id, name, due, isDone, hasAlert) SELECT * FROM tasks;');
+            await db.execute('DROP TABLE tasks;');
+            await db.execute('ALTER TABLE temp RENAME TO tasks');
+          })
+        ])
+        .addCallback(Callback(
+          onOpen: (db) async {
+            db.execute('PRAGMA foreign_keys = ON');
+          },
+          onCreate: (database, version) => database.execute(
+              'INSERT INTO $kTaskListTableName (id, name) VALUES (0, "Default");'),
+        ))
+        .build();
+    return db;
+  });
 
   // ! Features - Settings
 

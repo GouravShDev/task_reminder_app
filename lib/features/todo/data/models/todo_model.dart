@@ -1,12 +1,6 @@
-import '../../domain/entities/todo.dart';
+import 'package:todo_list/core/utils/constants.dart';
 
-class ToDoFields {
-  static final String colId = 'id';
-  static final String colName = 'name';
-  static final String colDue = 'due';
-  static final String colAlert = 'hasAlert';
-  static final String colCompleted = 'isDone';
-}
+import '../../domain/entities/todo.dart';
 
 class ToDoModel extends ToDo {
   ToDoModel({
@@ -15,25 +9,39 @@ class ToDoModel extends ToDo {
     required due,
     required isDone,
     required hasAlert,
-  }) : super(id: id, name: name, due: due, isDone: isDone, hasAlert: hasAlert);
+    required repeatMode,
+    required taskListId,
+  }) : super(
+          id: id,
+          name: name,
+          due: due,
+          isDone: isDone,
+          hasAlert: hasAlert,
+          repeatMode: repeatMode,
+          taskListId: taskListId,
+        );
 
   factory ToDoModel.fromDatabaseJson(Map<String, dynamic> json) {
     return ToDoModel(
-      id: json[ToDoFields.colId],
-      name: json[ToDoFields.colName],
-      due: DateTime.parse(json[ToDoFields.colDue]),
-      isDone: json[ToDoFields.colCompleted] == 1,
-      hasAlert: json[ToDoFields.colAlert] == 1,
+      id: json[kTaskColId],
+      name: json[kTaskColName],
+      due: DateTime.parse(json[kTaskColDue]),
+      isDone: json[kTaskColCompleted] == 1,
+      hasAlert: json[kTaskColAlert] == 1,
+      repeatMode: json[kTaskColRepeatMode],
+      taskListId: json[kTaskColTaskListId],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      ToDoFields.colId: id,
-      ToDoFields.colName: name,
-      ToDoFields.colDue: due.toIso8601String(),
-      ToDoFields.colAlert: hasAlert ? 1 : 0,
-      ToDoFields.colCompleted: isDone ? 1 : 0,
+      kTaskColId: id,
+      kTaskColName: name,
+      kTaskColDue: due.toIso8601String(),
+      kTaskColAlert: hasAlert ? 1 : 0,
+      kTaskColCompleted: isDone ? 1 : 0,
+      kTaskColRepeatMode: repeatMode,
+      kTaskColTaskListId: taskListId,
     };
   }
 }

@@ -34,6 +34,8 @@ class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
       due: todo.due,
       isDone: todo.isDone,
       hasAlert: todo.hasAlert,
+      repeatMode: todo.repeatMode,
+      taskListId: todo.taskListId,
     );
   }
 }
