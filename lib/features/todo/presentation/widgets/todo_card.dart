@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../settings/provider/settings_provider.dart';
 import '../../domain/entities/todo.dart';
-import '../bloc/todo_bloc.dart';
 import '../pages/todo_add_edit_page.dart';
 import '../../../../injection_container.dart';
 
@@ -147,20 +147,32 @@ class _TodoCardState extends State<TodoCard> {
                     .copyWith(fontSize: size.width * 0.04),
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 4, right: 4),
-                    child: Icon(
-                      Icons.access_time_outlined,
-                      size: 12,
-                      color: subtitleColor,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 4, right: 4),
+                        child: Icon(
+                          Icons.access_time_outlined,
+                          size: 12,
+                          color: subtitleColor,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          locator<DateFormatter>().formatDate(widget.todo.due),
+                          style: TextStyle(color: subtitleColor),
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 4),
+                    margin: const EdgeInsets.only(top: 4, right: 4),
                     child: Text(
-                      locator<DateFormatter>().formatDate(widget.todo.due),
+                      'Default',
                       style: TextStyle(color: subtitleColor),
                     ),
                   ),

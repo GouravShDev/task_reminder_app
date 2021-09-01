@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/todo_bloc/todo_bloc.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../core/utils/todo_filter.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/todo.dart';
-import '../bloc/todo_bloc.dart';
 import 'error_message.dart';
 import 'intial_message.dart';
 import 'loading_widget.dart';

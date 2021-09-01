@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../domain/entities/todo.dart';
 
-import '../bloc/todo_bloc.dart';
 import '../widgets/date_input.dart';
 import '../widgets/time_input.dart';
 

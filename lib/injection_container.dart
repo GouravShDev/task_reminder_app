@@ -3,6 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import 'features/todo/domain/usecases/taskList/get_task_list.dart';
+import 'features/todo/domain/usecases/todo/toggle_todo_status.dart';
+import 'features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
 import 'core/services/notification_service.dart';
 import 'core/utils/constants.dart';
 import 'core/utils/date_formatter.dart';
@@ -13,10 +16,9 @@ import 'features/todo/data/datasources/local/database/app_database.dart';
 import 'features/todo/data/datasources/local/todo_database_data_source.dart';
 import 'features/todo/data/repositories/todos_repository_impl.dart';
 import 'features/todo/domain/repositories/todos_repository.dart';
-import 'features/todo/domain/usecases/add_todo.dart';
-import 'features/todo/domain/usecases/get_todo_list.dart';
-import 'features/todo/domain/usecases/toggle_todo_status.dart';
-import 'features/todo/presentation/bloc/todo_bloc.dart';
+import 'features/todo/domain/usecases/todo/add_todo.dart';
+import 'features/todo/domain/usecases/todo/get_todo_list.dart';
+import 'features/todo/presentation/blocs/todo_bloc/todo_bloc.dart';
 
 final locator = GetIt.I;
 
@@ -26,16 +28,23 @@ void init() {
   locator.registerFactory<TodoBloc>(() => TodoBloc(
       getTodosList: locator(),
       addTodoToDb: locator(),
-      toggleTodoStatus: locator(),
-      notificationService: locator()));
+      toggleTodoStatus: locator()));
+  locator.registerFactory<TaskListBloc>(
+      () => TaskListBloc(getAllTaskList: locator()));
 
   // locator.registerFactory<ThemeBloc>(() => ThemeBloc(locator()));
 
   // ? UseCases
+  // Todo
   locator.registerLazySingleton<GetTodosList>(() => GetTodosList(locator()));
-  locator.registerLazySingleton<AddTodoToDb>(() => AddTodoToDb(locator()));
+  locator.registerLazySingleton<AddTodoToDb>(
+      () => AddTodoToDb(locator(), locator()));
   locator.registerLazySingleton<ToggleTodoStatus>(
-      () => ToggleTodoStatus(locator()));
+      () => ToggleTodoStatus(locator(), locator()));
+
+  // TaskList
+  locator
+      .registerLazySingleton<GetAllTaskList>(() => GetAllTaskList(locator()));
 
   // ? Repositories
   locator.registerLazySingleton<TodosRepository>(
@@ -90,13 +99,16 @@ void init() {
             await db.execute('ALTER TABLE temp RENAME TO tasks');
           })
         ])
-        .addCallback(Callback(
-          onOpen: (db) async {
-            db.execute('PRAGMA foreign_keys = ON');
-          },
-          onCreate: (database, version) => database.execute(
-              'INSERT INTO $kTaskListTableName (id, name) VALUES (0, "Default");'),
-        ))
+        .addCallback(Callback(onOpen: (db) async {
+          db.execute('PRAGMA foreign_keys = ON');
+        }, onCreate: (database, version) {
+          database.execute(
+              'INSERT INTO $kTaskListTableName (id, name) VALUES (0, "Default");');
+          database.execute(
+              'INSERT INTO $kTaskListTableName (id, name) VALUES (1, "Personal");');
+          database.execute(
+              'INSERT INTO $kTaskListTableName (id, name) VALUES (2, "Work");');
+        }))
         .build();
     return db;
   });

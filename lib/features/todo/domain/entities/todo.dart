@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
-import 'package:todo_list/features/todo/domain/entities/task_list.dart';
+import 'task_list.dart';
 
 import '../../../../core/utils/constants.dart';
 

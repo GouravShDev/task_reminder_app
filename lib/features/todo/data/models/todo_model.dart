@@ -1,4 +1,4 @@
-import 'package:todo_list/core/utils/constants.dart';
+import '../../../../core/utils/constants.dart';
 
 import '../../domain/entities/todo.dart';
 

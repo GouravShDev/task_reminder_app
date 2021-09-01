@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqlite_api.dart' as sqflite;
-import 'package:todo_list/features/todo/data/datasources/local/DAOs/taskList_dao.dart';
-import 'package:todo_list/features/todo/domain/entities/task_list.dart';
+import '../DAOs/taskList_dao.dart';
+import '../../../../domain/entities/task_list.dart';
 
 import '../DAOs/todo_dao.dart';
 import '../converters/bool_converter.dart';

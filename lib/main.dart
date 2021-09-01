@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/settings/theme/app_themes.dart';
 import 'features/settings/provider/settings_provider.dart';
+import 'features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
+import 'features/todo/presentation/blocs/todo_bloc/todo_bloc.dart';
 import 'features/todo/presentation/pages/todo_overview_page.dart';
 import 'injection_container.dart' as injector;
 import 'package:provider/provider.dart';
 
 import 'router/app_router.dart';
-
-import 'features/todo/presentation/bloc/todo_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,9 +49,9 @@ class _MyAppState extends State<MyApp> {
                   BlocProvider(
                     create: (context) => injector.locator<TodoBloc>(),
                   ),
-                  // BlocProvider(
-                  //   create: (context) => injector.locator<ThemeBloc>(),
-                  // ),
+                  BlocProvider(
+                    create: (context) => injector.locator<TaskListBloc>(),
+                  ),
                 ],
                 child: ValueListenableBuilder<AppTheme>(
                   valueListenable: Provider.of<Settings>(context).appTheme,

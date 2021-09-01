@@ -8,6 +8,6 @@ abstract class TaskListDao {
   @Query('SELECT * FROM $kTaskListTableName')
   Future<List<TaskList>> getAllTaskLists();
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<int> insertTaskList(TaskList taskList);
 }

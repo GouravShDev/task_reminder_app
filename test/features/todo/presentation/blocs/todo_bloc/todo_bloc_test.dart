@@ -5,21 +5,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:todo_list/core/error/failures.dart';
-import 'package:todo_list/core/services/notification_service.dart';
 import 'package:todo_list/core/usecases/usecase.dart';
 import 'package:todo_list/features/todo/data/models/todo_model.dart';
 import 'package:todo_list/features/todo/domain/entities/todo.dart';
-import 'package:todo_list/features/todo/domain/usecases/add_todo.dart';
-import 'package:todo_list/features/todo/domain/usecases/get_todo_list.dart';
-import 'package:todo_list/features/todo/domain/usecases/toggle_todo_status.dart';
-import 'package:todo_list/features/todo/presentation/bloc/todo_bloc.dart';
+import 'package:todo_list/features/todo/domain/usecases/todo/add_todo.dart';
+import 'package:todo_list/features/todo/domain/usecases/todo/get_todo_list.dart';
+import 'package:todo_list/features/todo/domain/usecases/todo/toggle_todo_status.dart';
+import 'package:todo_list/features/todo/presentation/blocs/todo_bloc/todo_bloc.dart';
 
-import '../../../../fixtures/fixture_reader.dart';
 import 'package:todo_list/injection_container.dart' as injector;
+import '../../../../../fixtures/fixture_reader.dart';
+
 import 'todo_bloc_test.mocks.dart';
 
-@GenerateMocks(
-    [GetTodosList, AddTodoToDb, ToggleTodoStatus, NotificationService])
+@GenerateMocks([
+  GetTodosList,
+  AddTodoToDb,
+  ToggleTodoStatus,
+])
 void main() {
   injector.init();
 
@@ -27,18 +30,15 @@ void main() {
   late MockGetTodosList mockGetTodosList;
   late MockAddTodoToDb mockAddTodoToDb;
   late MockToggleTodoStatus mockToggleTodoStatus;
-  late MockNotificationService mockNotificationService;
 
   setUp(() async {
     mockGetTodosList = MockGetTodosList();
     mockAddTodoToDb = MockAddTodoToDb();
     mockToggleTodoStatus = MockToggleTodoStatus();
-    mockNotificationService = MockNotificationService();
     bloc = TodoBloc(
         getTodosList: mockGetTodosList,
         addTodoToDb: mockAddTodoToDb,
-        toggleTodoStatus: mockToggleTodoStatus,
-        notificationService: mockNotificationService);
+        toggleTodoStatus: mockToggleTodoStatus);
     await injector.locator.allReady();
   });
 
@@ -110,7 +110,7 @@ void main() {
             .copyWith(due: DateTime.now().add(Duration(hours: 1)));
 
     test(
-        'should emit [Loading, Loaded,Loaded(withNewTodo)] when data is gotten successfully and schedule notification if alert is on',
+        'should emit [Loading, Loaded,Loaded(withNewTodo)] when data is gotten successfully',
         () async {
       //arrange
       when(mockGetTodosList(any)).thenAnswer((_) async => Right([]));
@@ -127,19 +127,6 @@ void main() {
       //act
       bloc.add(GetTodos());
       bloc.add(AddTodo(tTodo));
-
-      // asset
-      await untilCalled(mockNotificationService.scheduledNotification(
-          id: tTodo.id,
-          message: anyNamed('message'),
-          scheduledDate: tTodo.due,
-          title: tTodo.name));
-
-      verify(mockNotificationService.scheduledNotification(
-          id: tTodo.id,
-          message: anyNamed('message'),
-          scheduledDate: tTodo.due,
-          title: tTodo.name));
     });
 
     test('should emit [Loading, Error] when getting data fails', () async {
@@ -163,7 +150,7 @@ void main() {
     final ToDo tTodoToggled = tTodo.copyWith(isDone: !tTodo.isDone);
 
     test(
-        'should emit [Loading, Loaded,Loaded(withUpdateTodo)] when data is gotten successfully and remove schedule notification',
+        'should emit [Loading, Loaded,Loaded(withUpdateTodo)] when data is gotten successfully ',
         () async {
       //arrange
       when(mockGetTodosList(any)).thenAnswer((_) async => Right([tTodo]));
@@ -182,10 +169,6 @@ void main() {
       //act
       bloc.add(GetTodos());
       bloc.add(ChangeTodoStatus(tTodo));
-
-      // asset
-      await untilCalled(mockNotificationService.cancelNotification(tTodo.id));
-      verify(mockNotificationService.cancelNotification(tTodo.id));
     });
 
     test('should emit [Loading, Error] when getting data fails', () async {

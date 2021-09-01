@@ -6,25 +6,27 @@ import 'package:todo_list/core/services/notification_service.dart';
 import 'package:todo_list/core/usecases/usecase.dart';
 import 'package:todo_list/features/todo/domain/entities/todo.dart';
 import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart';
-import 'package:todo_list/features/todo/domain/usecases/toggle_todo_status.dart';
+import 'package:todo_list/features/todo/domain/usecases/todo/add_todo.dart';
 
 import 'toggle_todo_status_test.mocks.dart';
 
 @GenerateMocks([TodosRepository, NotificationService])
 void main() {
-  late ToggleTodoStatus usecase;
+  late AddTodoToDb usecase;
   late MockTodosRepository mockTodosRepository;
+  late MockNotificationService mockNotificationService;
   setUp(() {
     mockTodosRepository = MockTodosRepository();
-    usecase = ToggleTodoStatus(mockTodosRepository);
+    mockNotificationService = MockNotificationService();
+    usecase = AddTodoToDb(mockTodosRepository, mockNotificationService);
   });
 
-  final ToDo todo = ToDo(
-      id: 1, name: 'name', due: DateTime.now(), isDone: true, hasAlert: true);
+  final ToDo todo =
+      ToDo(name: 'name', due: DateTime.now(), isDone: true, hasAlert: true);
   test(
-      'should change todo isDone property after updating to database and cancel notfication schedule through the repository',
+      'should get todo after adding to database through the repository and schedule notification if alert is on',
       () async {
-    final ToDo expectedTodo = todo.copyWith(isDone: false);
+    final ToDo expectedTodo = todo.copyWith(id: 1);
     // arrange
     when(mockTodosRepository.addTodo(any))
         .thenAnswer((_) async => Right(expectedTodo));
@@ -35,6 +37,11 @@ void main() {
     // assert
 
     expect(result, Right(expectedTodo));
+    untilCalled(mockNotificationService.scheduledNotification(
+        id: anyNamed('id'),
+        message: anyNamed('message'),
+        scheduledDate: anyNamed('scheduledDate'),
+        title: anyNamed('title')));
     verify(mockTodosRepository.addTodo(any));
     verifyNoMoreInteractions(mockTodosRepository);
   });

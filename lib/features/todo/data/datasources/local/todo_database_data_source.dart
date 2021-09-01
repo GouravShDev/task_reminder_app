@@ -1,3 +1,5 @@
+import '../../../domain/entities/task_list.dart';
+
 import 'database/app_database.dart';
 
 import '../../../../../core/error/exceptions.dart';
@@ -13,6 +15,16 @@ abstract class TodoDatabaseDataSource {
   ///
   /// Throws a [DatabaseException] if unable to store the data
   Future<ToDo> storeToDo(ToDo todo);
+
+  /// Retieve all [Task Lists] from the database
+  ///
+  /// Throws a [DatabaseException] if the database is not available
+  Future<List<TaskList>> getTaskLists();
+
+  /// Store [Task List] into the database
+  ///
+  /// Throws a [DatabaseException] if unable to store the data
+  Future<TaskList> storeTaskList(TaskList taskList);
 }
 
 class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
@@ -37,5 +49,16 @@ class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
       repeatMode: todo.repeatMode,
       taskListId: todo.taskListId,
     );
+  }
+
+  @override
+  Future<List<TaskList>> getTaskLists() async {
+    return await _appDatabase.taskListDao.getAllTaskLists();
+  }
+
+  @override
+  Future<TaskList> storeTaskList(TaskList taskList) async {
+    final id = await _appDatabase.taskListDao.insertTaskList(taskList);
+    return TaskList(id: id, name: taskList.name);
   }
 }

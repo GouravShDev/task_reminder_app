@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
-import 'package:todo_list/core/utils/constants.dart';
+
+import '../../../../core/utils/constants.dart';
 
 @Entity(tableName: kTaskListTableName)
 class TaskList extends Equatable {
@@ -9,10 +10,20 @@ class TaskList extends Equatable {
   final String name;
 
   TaskList({
-    required this.id,
+    this.id,
     required this.name,
   });
 
   @override
   List<Object?> get props => [name];
+
+  TaskList copyWith({
+    int? id,
+    String? name,
+  }) {
+    return TaskList(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
 }
