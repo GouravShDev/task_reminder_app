@@ -10,7 +10,7 @@ abstract class TaskListState extends Equatable {
 class TaskListInitial extends TaskListState {}
 
 class TaskListsLoaded extends TaskListState {
-  final List<TaskList> taskList;
+  final List<TasksList> taskList;
 
   TaskListsLoaded(this.taskList);
 }

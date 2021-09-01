@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_list/core/utils/todo_filter.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 
 import '../../../../core/utils/constants.dart';
-import '../../../../core/utils/todo_filter.dart';
 import '../../../../injection_container.dart';
-import '../../domain/entities/todo.dart';
 import 'error_message.dart';
 import 'intial_message.dart';
 import 'loading_widget.dart';
@@ -19,7 +19,8 @@ class TodoPanel extends StatefulWidget {
 }
 
 class _TodoPanelState extends State<TodoPanel> {
-  Widget _buildTodoTile({required String title, required List<ToDo> todos}) {
+  Widget _buildTodoTile(
+      {required String title, required List<TodoWithTasksList> todos}) {
     if (todos.isEmpty) return Container();
     final Color borderColor = (title.contains('Overdue'))
         ? Theme.of(context).errorColor
@@ -51,7 +52,7 @@ class _TodoPanelState extends State<TodoPanel> {
             itemBuilder: (context, index) {
               return TodoCard(
                 todos[index],
-                key: Key(todos[index].id.toString()),
+                key: Key(todos[index].todo.id.toString()),
               );
             },
           ),
@@ -87,7 +88,7 @@ class _TodoPanelState extends State<TodoPanel> {
         } else if (state is Error) {
           return ErrorMessage(errorMessage: state.message);
         } else if (state is Loaded) {
-          final todosList = state.todos;
+          final todosList = state.todoWithtasklist;
           return (todosList.isNotEmpty)
               ? _buildBody(todosList)
               : InitialMessage();
@@ -98,7 +99,7 @@ class _TodoPanelState extends State<TodoPanel> {
     ));
   }
 
-  Widget _buildBody(List<ToDo> todosList) {
+  Widget _buildBody(List<TodoWithTasksList> todosList) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),

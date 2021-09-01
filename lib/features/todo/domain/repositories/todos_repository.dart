@@ -1,12 +1,14 @@
 // import '';
 
 import 'package:dartz/dartz.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 
-import '/features/todo/domain/entities/todo.dart';
 import '../../../../core/error/failures.dart';
 
 abstract class TodosRepository {
-  Future<Either<Failure, List<ToDo>>> getTodosList();
+  Future<Either<Failure, List<Todo>>> getTodosList();
 
-  Future<Either<Failure, ToDo>> addTodo(ToDo todo);
+  Either<Failure, Stream<List<TodoWithTasksList>>> watchIncompTodosList();
+
+  Future<Either<Failure, int>> addTodo(TasksCompanion todo);
 }

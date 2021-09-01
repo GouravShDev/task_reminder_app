@@ -9,13 +9,19 @@ abstract class TodoEvent extends Equatable {
 class GetTodos extends TodoEvent {}
 
 class AddTodo extends TodoEvent {
-  final ToDo todo;
+  final TasksCompanion todo;
 
   AddTodo(this.todo);
 }
 
 class ChangeTodoStatus extends TodoEvent {
-  final ToDo todo;
+  final Todo todo;
 
   ChangeTodoStatus(this.todo);
+}
+
+class TodoListUpdated extends TodoEvent {
+  final List<TodoWithTasksList> todosList;
+
+  TodoListUpdated({required this.todosList});
 }

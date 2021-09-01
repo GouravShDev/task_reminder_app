@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../domain/entities/task_list.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import '../../domain/repositories/task_list_repository.dart';
 
 import '../../../../core/error/exceptions.dart';
@@ -14,18 +14,19 @@ class TaskListRepositoryImpl implements TaskListRepository {
   });
 
   @override
-  Future<Either<Failure, List<TaskList>>> getAllTaskLists() async {
+  Future<Either<Failure, List<TasksList>>> getAllTaskLists() async {
     try {
-      return Right(await databaseDataSource.getTaskLists());
+      return Right(await databaseDataSource.getAllTaskLists());
     } on DatabaseException {
       return Left(DatabaseFailure());
     }
   }
 
   @override
-  Future<Either<Failure, TaskList>> addTaskList(TaskList taskList) async {
+  Future<Either<Failure, TasksList>> addTaskList(
+      TasksListTableCompanion taskList) async {
     try {
-      return Right(await databaseDataSource.storeTaskList(taskList));
+      return Right(await databaseDataSource.storeTasksList(taskList));
     } on DatabaseException {
       return Left(DatabaseFailure());
     }

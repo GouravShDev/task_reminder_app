@@ -1,18 +1,50 @@
-import 'package:floor/floor.dart';
-import '../../../../domain/entities/todo.dart';
-import '../../../../../../core/utils/constants.dart';
+import 'package:moor/moor.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 
-@dao
-abstract class TodoDao {
-  @Query('SELECT * FROM $kTodoTableName ORDER BY due ASC')
-  Future<List<ToDo>> getAllTodos();
+part 'todo_dao.g.dart';
 
-  @Query('SELECT * FROM $kTodoTableName WHERE id = :id')
-  Future<ToDo?> getTodoById(int id);
+@UseDao(tables: [Tasks, TasksListTable])
+class TodoDao extends DatabaseAccessor<AppDatabase> with _$TodoDaoMixin {
+  final AppDatabase db;
 
-  @Insert(onConflict: OnConflictStrategy.replace)
-  Future<int> insertTodo(ToDo todo);
+  TodoDao(this.db) : super(db);
 
-  @delete
-  Future<void> deleteTodo(ToDo todo);
+  Future<List<Todo>> getAllTodos() => select(tasks).get();
+  Stream<List<Todo>> watchAllTodos() => select(tasks).watch();
+
+  Stream<List<TodoWithTasksList>> watchIncompletedWithTaskListTodos() {
+    return (select(tasks)
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.due, mode: OrderingMode.desc),
+          ])
+          ..where((t) => t.isDone.equals(false)))
+        .join([
+          innerJoin(
+              tasksListTable, tasksListTable.id.equalsExp(tasks.tasklistId)),
+        ])
+        .watch()
+        .map(
+          (rows) => rows
+              .map(
+                (row) => TodoWithTasksList(
+                    todo: row.readTable(tasks),
+                    tasksList: row.readTable(tasksListTable)),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<Todo>> watchCompletedTodos() {
+    return (select(tasks)
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.due, mode: OrderingMode.desc),
+          ])
+          ..where((t) => t.isDone.equals(true)))
+        .watch();
+  }
+
+  Future<int> insertTodo(Insertable<Todo> todo) =>
+      into(tasks).insertOnConflictUpdate(todo);
+  Future updateTodo(Insertable<Todo> todo) => update(tasks).replace(todo);
+  Future deleteTodo(Insertable<Todo> todo) => delete(tasks).delete(todo);
 }

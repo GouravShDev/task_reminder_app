@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:moor/moor.dart' as mr;
 import 'package:provider/provider.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../settings/provider/settings_provider.dart';
-import '../../domain/entities/todo.dart';
 import '../pages/todo_add_edit_page.dart';
 import '../../../../injection_container.dart';
 
 class TodoCard extends StatefulWidget {
-  final ToDo todo;
+  final TodoWithTasksList todoWithTasksList;
   // final Function()
-  const TodoCard(this.todo, {Key? key}) : super(key: key);
+  const TodoCard(this.todoWithTasksList, {Key? key}) : super(key: key);
 
   @override
   _TodoCardState createState() => _TodoCardState();
@@ -18,6 +19,15 @@ class TodoCard extends StatefulWidget {
 
 class _TodoCardState extends State<TodoCard> {
   var _isCompleted = false;
+  late Todo todo;
+  late TasksList tasksList;
+
+  @override
+  void initState() {
+    todo = widget.todoWithTasksList.todo;
+    tasksList = widget.todoWithTasksList.tasksList;
+    super.initState();
+  }
 
   void _taskCompleted() {
     setState(() {
@@ -26,7 +36,21 @@ class _TodoCardState extends State<TodoCard> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final bloc = context.read<TodoBloc>();
     Future.delayed(const Duration(milliseconds: 500), () {
-      bloc.add(ChangeTodoStatus(widget.todo));
+      // bloc.add(ChangeTodoStatus(widget.todo));
+      bloc.add(
+        AddTodo(
+          TasksCompanion(
+            id: mr.Value(todo.id),
+            name: mr.Value(todo.name),
+            due: mr.Value(todo.due),
+            isDone: mr.Value(!todo.isDone),
+            hasAlert: mr.Value(todo.hasAlert),
+            repeatMode: mr.Value(todo.repeatMode),
+            tasklistId: mr.Value(todo.tasklistId),
+          ),
+        ),
+      );
+
       // if (removedTodo.hasAlert == 1) {
       //   NotificationService.cancelScheduledNotification(widget.id);
       // }
@@ -37,7 +61,19 @@ class _TodoCardState extends State<TodoCard> {
           label: 'Undo',
           textColor: Theme.of(context).primaryColor,
           onPressed: () {
-            bloc.add(AddTodo(widget.todo));
+            bloc.add(
+              AddTodo(
+                TasksCompanion(
+                  id: mr.Value(todo.id),
+                  name: mr.Value(todo.name),
+                  due: mr.Value(todo.due),
+                  isDone: mr.Value(todo.isDone),
+                  hasAlert: mr.Value(todo.hasAlert),
+                  repeatMode: mr.Value(todo.repeatMode),
+                  tasklistId: mr.Value(todo.tasklistId),
+                ),
+              ),
+            );
             // if (removedTodo.hasAlert == 1) {
             //   NotificationService.scheduledNotification(
             //       id: removedTodo.id!, scheduledDate: removedTodo.due);
@@ -78,17 +114,17 @@ class _TodoCardState extends State<TodoCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final subtitleColor = (widget.todo.due.isAfter(DateTime.now()))
-        ? Theme.of(context).primaryColor
-        : Theme.of(context).errorColor;
+    final subtitleColor =
+        ((todo.due != null) && (todo.due!.isAfter(DateTime.now())))
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).errorColor;
 
     final proviedSettings = Provider.of<Settings>(context);
     return InkWell(
       onTap: () {
         final scaffold = ScaffoldMessenger.of(context);
         scaffold.hideCurrentSnackBar();
-        Navigator.pushNamed(context, TodoAddEditPage.route,
-                arguments: widget.todo)
+        Navigator.pushNamed(context, TodoAddEditPage.route, arguments: todo)
             .then((msg) {
           if (msg != null) {
             scaffold.hideCurrentSnackBar();
@@ -140,7 +176,7 @@ class _TodoCardState extends State<TodoCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.todo.name,
+                todo.name,
                 style: Theme.of(context)
                     .textTheme
                     .bodyText1!
@@ -163,7 +199,9 @@ class _TodoCardState extends State<TodoCard> {
                       Container(
                         margin: const EdgeInsets.only(top: 4),
                         child: Text(
-                          locator<DateFormatter>().formatDate(widget.todo.due),
+                          // Todo: remove datetime.now()
+                          locator<DateFormatter>()
+                              .formatDate(todo.due ?? DateTime.now()),
                           style: TextStyle(color: subtitleColor),
                         ),
                       ),
@@ -172,7 +210,7 @@ class _TodoCardState extends State<TodoCard> {
                   Container(
                     margin: const EdgeInsets.only(top: 4, right: 4),
                     child: Text(
-                      'Default',
+                      tasksList.name,
                       style: TextStyle(color: subtitleColor),
                     ),
                   ),

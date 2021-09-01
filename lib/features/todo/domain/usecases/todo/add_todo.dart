@@ -1,41 +1,45 @@
 import 'package:date_format/date_format.dart';
+import 'package:moor/moor.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import '../../../../../core/services/notification_service.dart';
 
 import '../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import '../../../../../core/usecases/usecase.dart';
-import '../../entities/todo.dart';
 import '../../repositories/todos_repository.dart';
 
-class AddTodoToDb implements UseCase<ToDo, Params> {
+class AddTodoToDb implements UseCase<int, Params> {
   final TodosRepository repository;
 
   final NotificationService notificationService;
   AddTodoToDb(this.repository, this.notificationService);
 
   @override
-  Future<Either<Failure, ToDo>> call(Params params) async {
+  Future<Either<Failure, int>> call(Params params) async {
     final result = await repository.addTodo(params.todo);
-    return result.fold((failure) => Left(failure), (todo) {
-      _scheduleNotification(todo);
-      return Right(todo);
+    return result.fold((failure) => Left(failure), (id) {
+      _scheduleNotification(id, params.todo);
+      return Right(id);
     });
   }
 
-  void _scheduleNotification(ToDo td) {
-    if (td.hasAlert && td.due.isAfter(DateTime.now())) {
+  void _scheduleNotification(int id, TasksCompanion td) {
+    if (td.due != Value.absent() &&
+        td.hasAlert.value &&
+        td.due.value!.isAfter(DateTime.now())) {
+      final time = td.due.value!;
       notificationService.scheduledNotification(
-          id: td.id!,
-          message: formatDate(DateTime(2019, 08, 1, td.due.hour, td.due.minute),
+          id: id,
+          message: formatDate(DateTime(2019, 08, 1, time.hour, time.minute),
               [hh, ':', nn, " ", am]).toString(),
-          title: td.name,
-          scheduledDate: td.due);
+          title: td.name.value,
+          scheduledDate: time);
     }
   }
 }
 
 class Params {
-  final ToDo todo;
+  final TasksCompanion todo;
 
   Params(this.todo);
 }

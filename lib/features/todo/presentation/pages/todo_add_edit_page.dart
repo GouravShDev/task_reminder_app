@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:moor/moor.dart' as mr;
 import 'package:provider/provider.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/services/notification_service.dart';
-import '../../domain/entities/todo.dart';
 
 import '../widgets/date_input.dart';
 import '../widgets/time_input.dart';
@@ -10,7 +11,7 @@ import '../widgets/time_input.dart';
 import '../../../../injection_container.dart';
 
 class TodoAddEditPage extends StatefulWidget {
-  final ToDo? currentTodo;
+  final Todo? currentTodo;
   TodoAddEditPage({this.currentTodo, Key? key}) : super(key: key);
 
   static const route = '/todo-add-edit';
@@ -32,18 +33,21 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
   late bool _isNotificationOn;
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      final newTodo = ToDo(
-        id: _currentTaskId,
-        name: _taskName,
-        due: DateTime(
+      final newTodo = TasksCompanion(
+        id: (_currentTaskId == null)
+            ? mr.Value.absent()
+            : mr.Value(_currentTaskId!),
+        name: mr.Value(_taskName),
+        due: mr.Value(DateTime(
           _selectedDate.year,
           _selectedDate.month,
           _selectedDate.day,
           _selectedTime.hour,
           _selectedTime.minute,
-        ),
-        hasAlert: _isNotificationOn,
+        )),
+        hasAlert: mr.Value(_isNotificationOn),
       );
+
       context.read<TodoBloc>()..add(AddTodo(newTodo));
 
       // check if alert was on previous and now is off
@@ -52,7 +56,7 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
           !_isNotificationOn &&
           widget.currentTodo!.hasAlert) {
         locator<NotificationService>()
-            .cancelNotification(widget.currentTodo!.id!);
+            .cancelNotification(widget.currentTodo!.id);
       }
       final snackBarMessage = (widget.currentTodo == null)
           ? 'Task added Successfully'

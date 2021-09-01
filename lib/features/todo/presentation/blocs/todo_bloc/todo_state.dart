@@ -12,14 +12,14 @@ class TodoInitial extends TodoState {}
 class Loading extends TodoState {}
 
 class Loaded extends TodoState {
-  final List<ToDo> todos;
+  final List<TodoWithTasksList> todoWithtasklist;
 
   Loaded({
-    required this.todos,
+    required this.todoWithtasklist,
   });
 
   @override
-  List<Object> get props => [todos];
+  List<Object> get props => [todoWithtasklist];
 }
 
 class Error extends TodoState {

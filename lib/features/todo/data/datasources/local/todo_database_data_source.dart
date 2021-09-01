@@ -1,30 +1,33 @@
-import '../../../domain/entities/task_list.dart';
-
 import 'database/app_database.dart';
 
 import '../../../../../core/error/exceptions.dart';
-import '../../../domain/entities/todo.dart';
 
 abstract class TodoDatabaseDataSource {
-  /// Retrieve all [ToDo] from the database
+  /// Retrieve all [Todo] from the database
   ///
   /// Throws a [DatabaseException] if the database is not available
-  Future<List<ToDo>> getTodosList();
+  Future<List<Todo>> getAllTodos();
 
-  /// Store [ToDo] into the database
+  /// Retrieve a Stream of incomplete [TodoWithTasksList] from the database
+  ///
+  /// Throws a [DatabaseException] if the database is not available
+  Stream<List<TodoWithTasksList>> watchIncompTodosAsStream();
+
+  /// Store [Todo] into the database
+  /// if already present update it
   ///
   /// Throws a [DatabaseException] if unable to store the data
-  Future<ToDo> storeToDo(ToDo todo);
+  Future<int> storeTodo(TasksCompanion todo);
 
-  /// Retieve all [Task Lists] from the database
+  /// Retieve all [Tasks List] from the database
   ///
   /// Throws a [DatabaseException] if the database is not available
-  Future<List<TaskList>> getTaskLists();
+  Future<List<TasksList>> getAllTaskLists();
 
   /// Store [Task List] into the database
   ///
   /// Throws a [DatabaseException] if unable to store the data
-  Future<TaskList> storeTaskList(TaskList taskList);
+  Future storeTasksList(TasksListTableCompanion taskList);
 }
 
 class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
@@ -33,32 +36,27 @@ class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
   TodoDatabaseSourceImpl(this._appDatabase);
 
   @override
-  Future<List<ToDo>> getTodosList() async {
-    return await _appDatabase.todoDao.getAllTodos();
+  Future<List<TasksList>> getAllTaskLists() {
+    return _appDatabase.tasksListDao.getAllTasksList();
   }
 
   @override
-  Future<ToDo> storeToDo(ToDo todo) async {
-    final id = await _appDatabase.todoDao.insertTodo(todo);
-    return ToDo(
-      id: id,
-      name: todo.name,
-      due: todo.due,
-      isDone: todo.isDone,
-      hasAlert: todo.hasAlert,
-      repeatMode: todo.repeatMode,
-      taskListId: todo.taskListId,
-    );
+  Future<List<Todo>> getAllTodos() {
+    return _appDatabase.todoDao.getAllTodos();
   }
 
   @override
-  Future<List<TaskList>> getTaskLists() async {
-    return await _appDatabase.taskListDao.getAllTaskLists();
+  Future storeTasksList(TasksListTableCompanion taskList) {
+    return _appDatabase.tasksListDao.insertTasksList(taskList);
   }
 
   @override
-  Future<TaskList> storeTaskList(TaskList taskList) async {
-    final id = await _appDatabase.taskListDao.insertTaskList(taskList);
-    return TaskList(id: id, name: taskList.name);
+  Future<int> storeTodo(TasksCompanion todo) {
+    return _appDatabase.todoDao.insertTodo(todo);
+  }
+
+  @override
+  Stream<List<TodoWithTasksList>> watchIncompTodosAsStream() {
+    return _appDatabase.todoDao.watchIncompletedWithTaskListTodos();
   }
 }

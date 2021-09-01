@@ -3,216 +3,552 @@
 part of 'app_database.dart';
 
 // **************************************************************************
-// FloorGenerator
+// MoorGenerator
 // **************************************************************************
 
-class $FloorAppDatabase {
-  /// Creates a database builder for a persistent database.
-  /// Once a database is built, you should keep a reference to it and re-use it.
-  static _$AppDatabaseBuilder databaseBuilder(String name) =>
-      _$AppDatabaseBuilder(name);
-
-  /// Creates a database builder for an in memory database.
-  /// Information stored in an in memory database disappears when the process is killed.
-  /// Once a database is built, you should keep a reference to it and re-use it.
-  static _$AppDatabaseBuilder inMemoryDatabaseBuilder() =>
-      _$AppDatabaseBuilder(null);
-}
-
-class _$AppDatabaseBuilder {
-  _$AppDatabaseBuilder(this.name);
-
-  final String? name;
-
-  final List<Migration> _migrations = [];
-
-  Callback? _callback;
-
-  /// Adds migrations to the builder.
-  _$AppDatabaseBuilder addMigrations(List<Migration> migrations) {
-    _migrations.addAll(migrations);
-    return this;
-  }
-
-  /// Adds a database [Callback] to the builder.
-  _$AppDatabaseBuilder addCallback(Callback callback) {
-    _callback = callback;
-    return this;
-  }
-
-  /// Creates the database and initializes it.
-  Future<AppDatabase> build() async {
-    final path = name != null
-        ? await sqfliteDatabaseFactory.getDatabasePath(name!)
-        : ':memory:';
-    final database = _$AppDatabase();
-    database.database = await database.open(
-      path,
-      _migrations,
-      _callback,
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+class Todo extends DataClass implements Insertable<Todo> {
+  final int id;
+  final String name;
+  final bool isDone;
+  final DateTime? due;
+  final bool hasAlert;
+  final int repeatMode;
+  final int tasklistId;
+  Todo(
+      {required this.id,
+      required this.name,
+      required this.isDone,
+      this.due,
+      required this.hasAlert,
+      required this.repeatMode,
+      required this.tasklistId});
+  factory Todo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return Todo(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      isDone: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
+      due: const DateTimeType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}due']),
+      hasAlert: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}has_alert'])!,
+      repeatMode: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}repeat_mode'])!,
+      tasklistId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}tasklist_id'])!,
     );
-    return database;
   }
-}
-
-class _$AppDatabase extends AppDatabase {
-  _$AppDatabase([StreamController<String>? listener]) {
-    changeListener = listener ?? StreamController<String>.broadcast();
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['is_done'] = Variable<bool>(isDone);
+    if (!nullToAbsent || due != null) {
+      map['due'] = Variable<DateTime?>(due);
+    }
+    map['has_alert'] = Variable<bool>(hasAlert);
+    map['repeat_mode'] = Variable<int>(repeatMode);
+    map['tasklist_id'] = Variable<int>(tasklistId);
+    return map;
   }
 
-  TodoDao? _todoDaoInstance;
-
-  TaskListDao? _taskListDaoInstance;
-
-  Future<sqflite.Database> open(String path, List<Migration> migrations,
-      [Callback? callback]) async {
-    final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
-      onConfigure: (database) async {
-        await database.execute('PRAGMA foreign_keys = ON');
-        await callback?.onConfigure?.call(database);
-      },
-      onOpen: (database) async {
-        await callback?.onOpen?.call(database);
-      },
-      onUpgrade: (database, startVersion, endVersion) async {
-        await MigrationAdapter.runMigrations(
-            database, startVersion, endVersion, migrations);
-
-        await callback?.onUpgrade?.call(database, startVersion, endVersion);
-      },
-      onCreate: (database, version) async {
-        await database.execute(
-            'CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `due` TEXT NOT NULL, `isDone` INTEGER NOT NULL, `hasAlert` INTEGER NOT NULL, `repeatMode` INTEGER NOT NULL, `taskListId` INTEGER NOT NULL)');
-        await database.execute(
-            'CREATE TABLE IF NOT EXISTS `task_lists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL)');
-
-        await callback?.onCreate?.call(database, version);
-      },
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
+      id: Value(id),
+      name: Value(name),
+      isDone: Value(isDone),
+      due: due == null && nullToAbsent ? const Value.absent() : Value(due),
+      hasAlert: Value(hasAlert),
+      repeatMode: Value(repeatMode),
+      tasklistId: Value(tasklistId),
     );
-    return sqfliteDatabaseFactory.openDatabase(path, options: databaseOptions);
+  }
+
+  factory Todo.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Todo(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      isDone: serializer.fromJson<bool>(json['isDone']),
+      due: serializer.fromJson<DateTime?>(json['due']),
+      hasAlert: serializer.fromJson<bool>(json['hasAlert']),
+      repeatMode: serializer.fromJson<int>(json['repeatMode']),
+      tasklistId: serializer.fromJson<int>(json['tasklistId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'isDone': serializer.toJson<bool>(isDone),
+      'due': serializer.toJson<DateTime?>(due),
+      'hasAlert': serializer.toJson<bool>(hasAlert),
+      'repeatMode': serializer.toJson<int>(repeatMode),
+      'tasklistId': serializer.toJson<int>(tasklistId),
+    };
+  }
+
+  Todo copyWith(
+          {int? id,
+          String? name,
+          bool? isDone,
+          DateTime? due,
+          bool? hasAlert,
+          int? repeatMode,
+          int? tasklistId}) =>
+      Todo(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        isDone: isDone ?? this.isDone,
+        due: due ?? this.due,
+        hasAlert: hasAlert ?? this.hasAlert,
+        repeatMode: repeatMode ?? this.repeatMode,
+        tasklistId: tasklistId ?? this.tasklistId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Todo(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isDone: $isDone, ')
+          ..write('due: $due, ')
+          ..write('hasAlert: $hasAlert, ')
+          ..write('repeatMode: $repeatMode, ')
+          ..write('tasklistId: $tasklistId')
+          ..write(')'))
+        .toString();
   }
 
   @override
-  TodoDao get todoDao {
-    return _todoDaoInstance ??= _$TodoDao(database, changeListener);
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(
+              isDone.hashCode,
+              $mrjc(
+                  due.hashCode,
+                  $mrjc(hasAlert.hashCode,
+                      $mrjc(repeatMode.hashCode, tasklistId.hashCode)))))));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Todo &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isDone == this.isDone &&
+          other.due == this.due &&
+          other.hasAlert == this.hasAlert &&
+          other.repeatMode == this.repeatMode &&
+          other.tasklistId == this.tasklistId);
+}
+
+class TasksCompanion extends UpdateCompanion<Todo> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<bool> isDone;
+  final Value<DateTime?> due;
+  final Value<bool> hasAlert;
+  final Value<int> repeatMode;
+  final Value<int> tasklistId;
+  const TasksCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isDone = const Value.absent(),
+    this.due = const Value.absent(),
+    this.hasAlert = const Value.absent(),
+    this.repeatMode = const Value.absent(),
+    this.tasklistId = const Value.absent(),
+  });
+  TasksCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.isDone = const Value.absent(),
+    this.due = const Value.absent(),
+    this.hasAlert = const Value.absent(),
+    this.repeatMode = const Value.absent(),
+    this.tasklistId = const Value.absent(),
+  }) : name = Value(name);
+  static Insertable<Todo> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<bool>? isDone,
+    Expression<DateTime?>? due,
+    Expression<bool>? hasAlert,
+    Expression<int>? repeatMode,
+    Expression<int>? tasklistId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (isDone != null) 'is_done': isDone,
+      if (due != null) 'due': due,
+      if (hasAlert != null) 'has_alert': hasAlert,
+      if (repeatMode != null) 'repeat_mode': repeatMode,
+      if (tasklistId != null) 'tasklist_id': tasklistId,
+    });
+  }
+
+  TasksCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<bool>? isDone,
+      Value<DateTime?>? due,
+      Value<bool>? hasAlert,
+      Value<int>? repeatMode,
+      Value<int>? tasklistId}) {
+    return TasksCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isDone: isDone ?? this.isDone,
+      due: due ?? this.due,
+      hasAlert: hasAlert ?? this.hasAlert,
+      repeatMode: repeatMode ?? this.repeatMode,
+      tasklistId: tasklistId ?? this.tasklistId,
+    );
   }
 
   @override
-  TaskListDao get taskListDao {
-    return _taskListDaoInstance ??= _$TaskListDao(database, changeListener);
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isDone.present) {
+      map['is_done'] = Variable<bool>(isDone.value);
+    }
+    if (due.present) {
+      map['due'] = Variable<DateTime?>(due.value);
+    }
+    if (hasAlert.present) {
+      map['has_alert'] = Variable<bool>(hasAlert.value);
+    }
+    if (repeatMode.present) {
+      map['repeat_mode'] = Variable<int>(repeatMode.value);
+    }
+    if (tasklistId.present) {
+      map['tasklist_id'] = Variable<int>(tasklistId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isDone: $isDone, ')
+          ..write('due: $due, ')
+          ..write('hasAlert: $hasAlert, ')
+          ..write('repeatMode: $repeatMode, ')
+          ..write('tasklistId: $tasklistId')
+          ..write(')'))
+        .toString();
   }
 }
 
-class _$TodoDao extends TodoDao {
-  _$TodoDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
-        _toDoInsertionAdapter = InsertionAdapter(
-            database,
-            'tasks',
-            (ToDo item) => <String, Object?>{
-                  'id': item.id,
-                  'name': item.name,
-                  'due': _dateTimeConverter.encode(item.due),
-                  'isDone': item.isDone ? 1 : 0,
-                  'hasAlert': item.hasAlert ? 1 : 0,
-                  'repeatMode': item.repeatMode,
-                  'taskListId': item.taskListId
-                }),
-        _toDoDeletionAdapter = DeletionAdapter(
-            database,
-            'tasks',
-            ['id'],
-            (ToDo item) => <String, Object?>{
-                  'id': item.id,
-                  'name': item.name,
-                  'due': _dateTimeConverter.encode(item.due),
-                  'isDone': item.isDone ? 1 : 0,
-                  'hasAlert': item.hasAlert ? 1 : 0,
-                  'repeatMode': item.repeatMode,
-                  'taskListId': item.taskListId
-                });
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<ToDo> _toDoInsertionAdapter;
-
-  final DeletionAdapter<ToDo> _toDoDeletionAdapter;
-
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Todo> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $TasksTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      typeName: 'TEXT',
+      requiredDuringInsert: true);
+  final VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
+  late final GeneratedColumn<bool?> isDone = GeneratedColumn<bool?>(
+      'is_done', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK (is_done IN (0, 1))',
+      defaultValue: Constant(false));
+  final VerificationMeta _dueMeta = const VerificationMeta('due');
+  late final GeneratedColumn<DateTime?> due = GeneratedColumn<DateTime?>(
+      'due', aliasedName, true,
+      typeName: 'INTEGER', requiredDuringInsert: false);
+  final VerificationMeta _hasAlertMeta = const VerificationMeta('hasAlert');
+  late final GeneratedColumn<bool?> hasAlert = GeneratedColumn<bool?>(
+      'has_alert', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK (has_alert IN (0, 1))',
+      defaultValue: Constant(false));
+  final VerificationMeta _repeatModeMeta = const VerificationMeta('repeatMode');
+  late final GeneratedColumn<int?> repeatMode = GeneratedColumn<int?>(
+      'repeat_mode', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultValue: Constant(0));
+  final VerificationMeta _tasklistIdMeta = const VerificationMeta('tasklistId');
+  late final GeneratedColumn<int?> tasklistId = GeneratedColumn<int?>(
+      'tasklist_id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      $customConstraints: 'DEFAULT 0 REFERENCES tasks_list_table(id)',
+      defaultValue: Constant(0));
   @override
-  Future<List<ToDo>> getAllTodos() async {
-    return _queryAdapter.queryList('SELECT * FROM tasks ORDER BY due ASC',
-        mapper: (Map<String, Object?> row) => ToDo(
-            id: row['id'] as int?,
-            name: row['name'] as String,
-            due: _dateTimeConverter.decode(row['due'] as String),
-            isDone: (row['isDone'] as int) != 0,
-            hasAlert: (row['hasAlert'] as int) != 0,
-            repeatMode: row['repeatMode'] as int,
-            taskListId: row['taskListId'] as int));
+  List<GeneratedColumn> get $columns =>
+      [id, name, isDone, due, hasAlert, repeatMode, tasklistId];
+  @override
+  String get aliasedName => _alias ?? 'tasks';
+  @override
+  String get actualTableName => 'tasks';
+  @override
+  VerificationContext validateIntegrity(Insertable<Todo> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_done')) {
+      context.handle(_isDoneMeta,
+          isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
+    }
+    if (data.containsKey('due')) {
+      context.handle(
+          _dueMeta, due.isAcceptableOrUnknown(data['due']!, _dueMeta));
+    }
+    if (data.containsKey('has_alert')) {
+      context.handle(_hasAlertMeta,
+          hasAlert.isAcceptableOrUnknown(data['has_alert']!, _hasAlertMeta));
+    }
+    if (data.containsKey('repeat_mode')) {
+      context.handle(
+          _repeatModeMeta,
+          repeatMode.isAcceptableOrUnknown(
+              data['repeat_mode']!, _repeatModeMeta));
+    }
+    if (data.containsKey('tasklist_id')) {
+      context.handle(
+          _tasklistIdMeta,
+          tasklistId.isAcceptableOrUnknown(
+              data['tasklist_id']!, _tasklistIdMeta));
+    }
+    return context;
   }
 
   @override
-  Future<ToDo?> getTodoById(int id) async {
-    return _queryAdapter.query('SELECT * FROM tasks WHERE id = ?1',
-        mapper: (Map<String, Object?> row) => ToDo(
-            id: row['id'] as int?,
-            name: row['name'] as String,
-            due: _dateTimeConverter.decode(row['due'] as String),
-            isDone: (row['isDone'] as int) != 0,
-            hasAlert: (row['hasAlert'] as int) != 0,
-            repeatMode: row['repeatMode'] as int,
-            taskListId: row['taskListId'] as int),
-        arguments: [id]);
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Todo map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return Todo.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
-  Future<int> insertTodo(ToDo todo) {
-    return _toDoInsertionAdapter.insertAndReturnId(
-        todo, OnConflictStrategy.replace);
-  }
-
-  @override
-  Future<void> deleteTodo(ToDo todo) async {
-    await _toDoDeletionAdapter.delete(todo);
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(_db, alias);
   }
 }
 
-class _$TaskListDao extends TaskListDao {
-  _$TaskListDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
-        _taskListInsertionAdapter = InsertionAdapter(
-            database,
-            'task_lists',
-            (TaskList item) =>
-                <String, Object?>{'id': item.id, 'name': item.name});
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<TaskList> _taskListInsertionAdapter;
-
+class TasksList extends DataClass implements Insertable<TasksList> {
+  final int id;
+  final String name;
+  TasksList({required this.id, required this.name});
+  factory TasksList.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return TasksList(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+    );
+  }
   @override
-  Future<List<TaskList>> getAllTaskLists() async {
-    return _queryAdapter.queryList('SELECT * FROM task_lists',
-        mapper: (Map<String, Object?> row) =>
-            TaskList(id: row['id'] as int?, name: row['name'] as String));
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    return map;
+  }
+
+  TasksListTableCompanion toCompanion(bool nullToAbsent) {
+    return TasksListTableCompanion(
+      id: Value(id),
+      name: Value(name),
+    );
+  }
+
+  factory TasksList.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return TasksList(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  TasksList copyWith({int? id, String? name}) => TasksList(
+        id: id ?? this.id,
+        name: name ?? this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TasksList(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
   }
 
   @override
-  Future<int> insertTaskList(TaskList taskList) {
-    return _taskListInsertionAdapter.insertAndReturnId(
-        taskList, OnConflictStrategy.replace);
+  int get hashCode => $mrjf($mrjc(id.hashCode, name.hashCode));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TasksList && other.id == this.id && other.name == this.name);
+}
+
+class TasksListTableCompanion extends UpdateCompanion<TasksList> {
+  final Value<int> id;
+  final Value<String> name;
+  const TasksListTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  TasksListTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+  }) : name = Value(name);
+  static Insertable<TasksList> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  TasksListTableCompanion copyWith({Value<int>? id, Value<String>? name}) {
+    return TasksListTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksListTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
   }
 }
 
-// ignore_for_file: unused_element
-final _dateTimeConverter = DateTimeConverter();
-final _boolConverter = BoolConverter();
+class $TasksListTableTable extends TasksListTable
+    with TableInfo<$TasksListTableTable, TasksList> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $TasksListTableTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 20),
+      typeName: 'TEXT',
+      requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? 'tasks_list_table';
+  @override
+  String get actualTableName => 'tasks_list_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<TasksList> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TasksList map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return TasksList.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $TasksListTableTable createAlias(String alias) {
+    return $TasksListTableTable(_db, alias);
+  }
+}
+
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  late final $TasksTable tasks = $TasksTable(this);
+  late final $TasksListTableTable tasksListTable = $TasksListTableTable(this);
+  late final TodoDao todoDao = TodoDao(this as AppDatabase);
+  late final TasksListDao tasksListDao = TasksListDao(this as AppDatabase);
+  @override
+  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [tasks, tasksListTable];
+}
