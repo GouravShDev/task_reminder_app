@@ -18,12 +18,12 @@ class AddTodoToDb implements UseCase<int, TodoParams> {
   Future<Either<Failure, int>> call(TodoParams params) async {
     final result = await repository.addTodo(params.todo);
     return result.fold((failure) => Left(failure), (id) {
-      _scheduleNotification(id, params.todo);
+      _manageNotification(id, params.todo);
       return Right(id);
     });
   }
 
-  void _scheduleNotification(int id, TasksCompanion td) {
+  void _manageNotification(int id, TasksCompanion td) {
     if (td.due != Value.absent() &&
         td.hasAlert.value &&
         td.due.value!.isAfter(DateTime.now())) {
@@ -34,6 +34,8 @@ class AddTodoToDb implements UseCase<int, TodoParams> {
               [hh, ':', nn, " ", am]).toString(),
           title: td.name.value,
           scheduledDate: time);
+    } else if (!td.hasAlert.value) {
+      notificationService.cancelNotification(id);
     }
   }
 }

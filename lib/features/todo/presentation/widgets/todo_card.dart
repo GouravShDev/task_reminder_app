@@ -44,16 +44,12 @@ class _TodoCardState extends State<TodoCard> {
             name: mr.Value(todo.name),
             due: mr.Value(todo.due),
             isDone: mr.Value(!todo.isDone),
-            hasAlert: mr.Value(todo.hasAlert),
+            hasAlert: mr.Value(!todo.hasAlert),
             repeatMode: mr.Value(todo.repeatMode),
             tasklistId: mr.Value(todo.tasklistId),
           ),
         ),
       );
-
-      // if (removedTodo.hasAlert == 1) {
-      //   NotificationService.cancelScheduledNotification(widget.id);
-      // }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Task Done'),
         duration: Duration(milliseconds: 2000),
