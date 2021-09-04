@@ -24,4 +24,6 @@ class TodoListUpdated extends TodoEvent {
   final List<TodoWithTasksList> todosList;
 
   TodoListUpdated({required this.todosList});
+  @override
+  List<Object?> get props => [todosList];
 }

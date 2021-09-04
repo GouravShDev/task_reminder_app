@@ -8,7 +8,8 @@ import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:todo_list/core/error/failures.dart' as _i5;
 import 'package:todo_list/core/services/notification_service.dart' as _i7;
-import 'package:todo_list/features/todo/domain/entities/todo.dart' as _i6;
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart'
+    as _i6;
 import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart'
     as _i3;
 
@@ -31,17 +32,24 @@ class MockTodosRepository extends _i1.Mock implements _i3.TodosRepository {
   }
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.ToDo>>> getTodosList() =>
+  _i4.Future<_i2.Either<_i5.Failure, List<dynamic>>> getTodosList() =>
       (super.noSuchMethod(Invocation.method(#getTodosList, []),
-          returnValue: Future<_i2.Either<_i5.Failure, List<_i6.ToDo>>>.value(
-              _FakeEither_0<_i5.Failure, List<_i6.ToDo>>())) as _i4
-          .Future<_i2.Either<_i5.Failure, List<_i6.ToDo>>>);
+              returnValue: Future<_i2.Either<_i5.Failure, List<dynamic>>>.value(
+                  _FakeEither_0<_i5.Failure, List<dynamic>>()))
+          as _i4.Future<_i2.Either<_i5.Failure, List<dynamic>>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i6.ToDo>> addTodo(_i6.ToDo? todo) =>
+  _i2.Either<_i5.Failure, _i4.Stream<List<_i6.TodoWithTasksList>>>
+      watchIncompTodosList() => (super.noSuchMethod(
+              Invocation.method(#watchIncompTodosList, []),
+              returnValue: _FakeEither_0<_i5.Failure,
+                  _i4.Stream<List<_i6.TodoWithTasksList>>>())
+          as _i2.Either<_i5.Failure, _i4.Stream<List<_i6.TodoWithTasksList>>>);
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, int>> addTodo(dynamic todo) =>
       (super.noSuchMethod(Invocation.method(#addTodo, [todo]),
-              returnValue: Future<_i2.Either<_i5.Failure, _i6.ToDo>>.value(
-                  _FakeEither_0<_i5.Failure, _i6.ToDo>()))
-          as _i4.Future<_i2.Either<_i5.Failure, _i6.ToDo>>);
+              returnValue: Future<_i2.Either<_i5.Failure, int>>.value(
+                  _FakeEither_0<_i5.Failure, int>()))
+          as _i4.Future<_i2.Either<_i5.Failure, int>>);
   @override
   String toString() => super.toString();
 }

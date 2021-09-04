@@ -79,7 +79,7 @@ void main() {
       //assert later
       final expected = [
         Loading(),
-        Loaded(todos: [td]),
+        TodoLoaded(todos: [td]),
       ];
 
       expectLater(bloc.stream, emitsInOrder(expected));
@@ -119,8 +119,8 @@ void main() {
       //assert later
       final expected = [
         Loading(),
-        Loaded(todos: []),
-        Loaded(todos: [tTodo]),
+        TodoLoaded(todos: []),
+        TodoLoaded(todos: [tTodo]),
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 
@@ -161,8 +161,8 @@ void main() {
       //assert later
       final expected = [
         Loading(),
-        Loaded(todos: [tTodo]),
-        Loaded(todos: []),
+        TodoLoaded(todos: [tTodo]),
+        TodoLoaded(todos: []),
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 

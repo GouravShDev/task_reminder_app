@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/features/todo/presentation/pages/task_list_page.dart';
 import '../../../settings/ui/pages/Settings_page.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -43,6 +44,13 @@ class AppDrawer extends StatelessWidget {
             //     Navigator.of(context).pop();
             //   },
             // ),
+            ListTile(
+              leading: Icon(Icons.list_alt_rounded),
+              title: Text('Lists', style: listTileTextStyle),
+              onTap: () {
+                Navigator.pushNamed(context, TaskListPage.route);
+              },
+            ),
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings', style: listTileTextStyle),

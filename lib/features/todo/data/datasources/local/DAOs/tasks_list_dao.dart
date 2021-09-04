@@ -12,6 +12,8 @@ class TasksListDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TasksList>> watchAllTasksList() => select(tasksListTable).watch();
   Future<List<TasksList>> getAllTasksList() => select(tasksListTable).get();
-  Future insertTasksList(Insertable<TasksList> tasksList) =>
+  Future<int> insertTasksList(Insertable<TasksList> tasksList) =>
       into(tasksListTable).insertOnConflictUpdate(tasksList);
+  void deleteTaskList(TasksList tasksList) =>
+      delete(tasksListTable).delete(tasksList);
 }

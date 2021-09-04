@@ -8,9 +8,9 @@ enum AppTheme {
 
 const Color lightThemeColor = Color.fromRGBO(238, 238, 238, 1);
 const Color darkThemeColor = Color.fromRGBO(33, 33, 33, 1);
-const Color darkThemeCardColor = Color.fromRGBO(40, 40, 40, 1);
+const Color darkThemeCardColor = Color.fromRGBO(38, 38, 38, 1);
 const Color blackThemeColor = Colors.black;
-const Color blackThemeCardColor = Color.fromRGBO(31, 31, 31, 1);
+const Color blackThemeCardColor = Color.fromRGBO(25, 25, 25, 1);
 
 final MaterialColor appSwatch =
     createMaterialColor(Color.fromRGBO(48, 97, 183, 1));
@@ -62,7 +62,7 @@ final Map<AppTheme, ThemeData> appThemeData = {
       color: appSwatch.shade300,
     )),
     primarySwatch: appSwatch,
-    primaryColor: appSwatch.shade500,
+    primaryColor: appSwatch.shade400,
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: appSwatch.shade500),
     appBarTheme: AppBarTheme(

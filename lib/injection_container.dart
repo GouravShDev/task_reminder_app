@@ -3,6 +3,11 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:todo_list/core/utils/todo_filter.dart';
+import 'package:todo_list/features/todo/domain/repositories/task_list_repository.dart';
+import 'package:todo_list/features/todo/domain/usecases/taskList/add_task_list.dart';
+import 'package:todo_list/features/todo/domain/usecases/taskList/delete_task_list.dart';
+import 'package:todo_list/features/todo/domain/usecases/taskList/watch_task_list.dart';
+import 'features/todo/data/repositories/task_list_repository_impl.dart';
 import 'features/todo/domain/usecases/taskList/get_task_list.dart';
 import 'features/todo/domain/usecases/todo/toggle_todo_status.dart';
 import 'features/todo/domain/usecases/todo/watch_incomp_todo_list.dart';
@@ -29,8 +34,12 @@ void init() {
       addTodoToDb: locator(),
       toggleTodoStatus: locator(),
       watchIncompTodoList: locator()));
-  locator.registerFactory<TaskListBloc>(
-      () => TaskListBloc(getAllTaskList: locator()));
+  locator.registerFactory<TaskListBloc>(() => TaskListBloc(
+        getAllTaskList: locator(),
+        watchTasksList: locator(),
+        addTaskList: locator(),
+        deleteTaskList: locator(),
+      ));
 
   // locator.registerFactory<ThemeBloc>(() => ThemeBloc(locator()));
 
@@ -47,10 +56,17 @@ void init() {
   // TaskList
   locator
       .registerLazySingleton<GetAllTaskList>(() => GetAllTaskList(locator()));
+  locator
+      .registerLazySingleton<WatchTasksList>(() => WatchTasksList(locator()));
+  locator.registerLazySingleton<AddTaskList>(() => AddTaskList(locator()));
+  locator
+      .registerLazySingleton<DeleteTaskList>(() => DeleteTaskList(locator()));
 
   // ? Repositories
   locator.registerLazySingleton<TodosRepository>(
       () => TodoRepositoryImpl(databaseDataSource: locator()));
+  locator.registerLazySingleton<TaskListRepository>(
+      () => TaskListRepositoryImpl(databaseDataSource: locator()));
 
   // ? DataSources
   locator.registerLazySingleton<TodoDatabaseDataSource>(

@@ -1,16 +1,15 @@
-import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:moor/moor.dart';
 import 'package:todo_list/core/error/exceptions.dart';
 import 'package:todo_list/core/error/failures.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import 'package:todo_list/features/todo/data/datasources/local/todo_database_data_source.dart';
 import 'package:todo_list/features/todo/data/repositories/task_list_repository_impl.dart';
-import 'package:todo_list/features/todo/domain/entities/task_list.dart';
 
-import 'todos_repository_impl_test.mocks.dart';
+import 'task_list_repository_imp_test.mocks.dart';
 
 @GenerateMocks([TodoDatabaseDataSource])
 void main() {
@@ -24,20 +23,20 @@ void main() {
   });
 
   group(('getTodoList'), () {
-    final List<TaskList> tTaskList = [
-      TaskList(name: 'name', id: 1),
+    final List<TasksList> tTaskList = [
+      TasksList(name: 'name', id: 1),
     ];
 
     test(
         'should return list of taskList when call to database sources is successful',
         () async {
       // arrange
-      when(mockTodoDatabaseDataSource.getTaskLists())
+      when(mockTodoDatabaseDataSource.getAllTaskLists())
           .thenAnswer((_) async => tTaskList);
       // act
       final result = await repository.getAllTaskLists();
       // assert
-      verify(mockTodoDatabaseDataSource.getTaskLists());
+      verify(mockTodoDatabaseDataSource.getAllTaskLists());
       expect(result, Right(tTaskList));
     });
 
@@ -45,42 +44,46 @@ void main() {
         'should return database failure when the call to datasource is unsuccessful',
         () async {
       // arrange
-      when(mockTodoDatabaseDataSource.getTaskLists())
+      when(mockTodoDatabaseDataSource.getAllTaskLists())
           .thenThrow(DatabaseException());
       // act
       final result = await repository.getAllTaskLists();
       // assert
-      verify(mockTodoDatabaseDataSource.getTaskLists());
+      verify(mockTodoDatabaseDataSource.getAllTaskLists());
       expect(result, left(DatabaseFailure()));
     });
   });
 
   group('addTodo', () {
-    final TaskList taskList = TaskList(name: 'name');
+    final TasksList taskList = TasksList(name: 'name', id: 1);
     test('should return taskList when insert to datasource is successful',
         () async {
       // arrange
-      when(mockTodoDatabaseDataSource.storeTaskList(any))
-          .thenAnswer((_) async => taskList);
+      when(mockTodoDatabaseDataSource.storeTasksList(any))
+          .thenAnswer((_) async => taskList.id);
 
       // act
-      final result = await repository.addTaskList(taskList);
+      final result = await repository
+          .addTaskList(TasksListTableCompanion(name: Value(taskList.name)));
 
       // assert
-      verify(mockTodoDatabaseDataSource.storeTaskList(taskList));
-      expect(result, Right(taskList));
+      verify(mockTodoDatabaseDataSource
+          .storeTasksList(TasksListTableCompanion(name: Value(taskList.name))));
+      expect(result, Right((taskList)));
     });
 
     test(
         'should return database failure when the call to datasource is unsuccessful',
         () async {
       // arrange
-      when(mockTodoDatabaseDataSource.storeTaskList(any))
+      when(mockTodoDatabaseDataSource.storeTasksList(any))
           .thenThrow(DatabaseException());
       // act
-      final result = await repository.addTaskList(taskList);
+      final result = await repository
+          .addTaskList(TasksListTableCompanion(name: Value(taskList.name)));
       // assert
-      verify(mockTodoDatabaseDataSource.storeTaskList(taskList));
+      verify(mockTodoDatabaseDataSource
+          .storeTasksList(TasksListTableCompanion(name: Value(taskList.name))));
       expect(result, left(DatabaseFailure()));
     });
   });

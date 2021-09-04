@@ -305,7 +305,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Todo> {
       'tasklist_id', aliasedName, false,
       typeName: 'INTEGER',
       requiredDuringInsert: false,
-      $customConstraints: 'DEFAULT 0 REFERENCES tasks_list_table(id)',
+      $customConstraints:
+          'DEFAULT 0 REFERENCES tasks_list_table(id) ON DELETE CASCADE',
       defaultValue: Constant(0));
   @override
   List<GeneratedColumn> get $columns =>

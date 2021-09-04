@@ -1,9 +1,9 @@
 {
     "id" : 1,
     "name" : "test",
-    "due" : "2021-08-21T13:00:00.000",
-    "isDone": 0,
-    "hasAlert": 1,
+    "due" : 2342543,
+    "isDone": false,
+    "hasAlert": true,
     "repeatMode": 0,
-    "taskListId": 0
+    "tasklistId": 0
 }

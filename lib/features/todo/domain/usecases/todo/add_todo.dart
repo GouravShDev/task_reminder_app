@@ -8,14 +8,14 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../repositories/todos_repository.dart';
 
-class AddTodoToDb implements UseCase<int, Params> {
+class AddTodoToDb implements UseCase<int, TodoParams> {
   final TodosRepository repository;
 
   final NotificationService notificationService;
   AddTodoToDb(this.repository, this.notificationService);
 
   @override
-  Future<Either<Failure, int>> call(Params params) async {
+  Future<Either<Failure, int>> call(TodoParams params) async {
     final result = await repository.addTodo(params.todo);
     return result.fold((failure) => Left(failure), (id) {
       _scheduleNotification(id, params.todo);
@@ -38,8 +38,8 @@ class AddTodoToDb implements UseCase<int, Params> {
   }
 }
 
-class Params {
+class TodoParams {
   final TasksCompanion todo;
 
-  Params(this.todo);
+  TodoParams(this.todo);
 }

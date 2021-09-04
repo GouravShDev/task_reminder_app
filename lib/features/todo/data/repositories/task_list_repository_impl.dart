@@ -23,10 +23,28 @@ class TaskListRepositoryImpl implements TaskListRepository {
   }
 
   @override
-  Future<Either<Failure, TasksList>> addTaskList(
+  Future<Either<Failure, int>> addTaskList(
       TasksListTableCompanion taskList) async {
     try {
       return Right(await databaseDataSource.storeTasksList(taskList));
+    } on DatabaseException {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Either<Failure, Stream<List<TasksList>>> watchAllTaskLists() {
+    try {
+      return Right(databaseDataSource.watchTaskListsAsStream());
+    } on DatabaseException {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  @override
+  Either<Failure, void> deleteTaskList(TasksList tasksList) {
+    try {
+      return Right(databaseDataSource.deleteTasksList(tasksList));
     } on DatabaseException {
       return Left(DatabaseFailure());
     }

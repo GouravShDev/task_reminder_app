@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moor/moor.dart' as mr;
 import 'package:provider/provider.dart';
 import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
+import 'package:todo_list/features/todo/presentation/widgets/task_list_input.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/services/notification_service.dart';
 
@@ -29,6 +32,7 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
   // Intializing default values for date and Time input widget
   late TimeOfDay _selectedTime;
   late DateTime _selectedDate;
+  late int _selectedTasksListId;
 
   late bool _isNotificationOn;
   void _submitForm() {
@@ -45,7 +49,10 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
           _selectedTime.hour,
           _selectedTime.minute,
         )),
-        hasAlert: mr.Value(_isNotificationOn),
+        hasAlert: mr.Value(
+          _isNotificationOn,
+        ),
+        tasklistId: mr.Value(_selectedTasksListId),
       );
 
       context.read<TodoBloc>()..add(AddTodo(newTodo));
@@ -74,6 +81,7 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
     final DateTime date = widget.currentTodo?.due ?? DateTime.now();
     _selectedTime = TimeOfDay(hour: date.hour, minute: date.minute);
     _selectedDate = date;
+    _selectedTasksListId = widget.currentTodo?.tasklistId ?? 0;
     super.initState();
   }
 
@@ -83,7 +91,7 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Task',
+        title: Text(_currentTaskId == null ? 'Create Task' : "Edit Task",
             style: Theme.of(context).textTheme.headline6!.copyWith(
                 fontSize: mediaQuery.size.width * 0.05,
                 fontWeight: FontWeight.bold)),
@@ -166,6 +174,12 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
                           ),
                         ],
                       ),
+                    ),
+                    TasksListInput(
+                      (int tasklistId) {
+                        _selectedTasksListId = tasklistId;
+                      },
+                      initValue: _selectedTasksListId,
                     ),
                     Container(
                       width: double.infinity,

@@ -6,15 +6,13 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:todo_list/core/error/exceptions.dart';
 import 'package:todo_list/core/error/failures.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import 'package:todo_list/features/todo/data/datasources/local/todo_database_data_source.dart';
-import 'package:todo_list/features/todo/data/models/todo_model.dart';
 import 'package:todo_list/features/todo/data/repositories/todos_repository_impl.dart';
-import 'package:todo_list/features/todo/domain/entities/todo.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
-import 'todos_repository_impl_test.mocks.dart';
 
-@GenerateMocks([TodoDatabaseDataSource])
+// @GenerateMocks([TodoDatabaseDataSource])
 void main() {
   late TodoRepositoryImpl repository;
   late MockTodoDatabaseDataSource mockTodoDatabaseDataSource;
@@ -26,14 +24,14 @@ void main() {
   });
 
   group(('getTodoList'), () {
-    final List<ToDoModel> tTodos = [
-      ToDoModel.fromDatabaseJson(json.decode(Fixture('todos.json'))),
+    final List<Todo> tTodos = [
+      Todo.fromJson(json.decode(Fixture('todos.json'))),
     ];
 
     test('should return todoList when call to database sources is successful',
         () async {
       // arrange
-      when(mockTodoDatabaseDataSource.getTodosList())
+      when(mockTodoDatabaseDataSource.getAllTodos())
           .thenAnswer((_) async => tTodos);
       // act
       final result = await repository.getTodosList();

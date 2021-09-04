@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:moor/ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -19,9 +20,9 @@ class Tasks extends Table {
   DateTimeColumn get due => dateTime().nullable()();
   BoolColumn get hasAlert => boolean().withDefault(Constant(false))();
   IntColumn get repeatMode => integer().withDefault(Constant(0))();
-  IntColumn get tasklistId => integer()
-      .withDefault(Constant(0))
-      .customConstraint('DEFAULT 0 REFERENCES tasks_list_table(id)')();
+  IntColumn get tasklistId =>
+      integer().withDefault(Constant(0)).customConstraint(
+          'DEFAULT 0 REFERENCES tasks_list_table(id) ON DELETE CASCADE')();
 }
 
 @DataClassName('TasksList')
@@ -31,7 +32,7 @@ class TasksListTable extends Table {
   TextColumn get name => text().withLength(min: 1, max: 20)();
 }
 
-class TodoWithTasksList {
+class TodoWithTasksList extends Equatable {
   final Todo todo;
   final TasksList tasksList;
 
@@ -39,6 +40,9 @@ class TodoWithTasksList {
     required this.todo,
     required this.tasksList,
   });
+
+  @override
+  List<Object?> get props => [todo, tasksList];
 }
 //************************************************************************************************/
 

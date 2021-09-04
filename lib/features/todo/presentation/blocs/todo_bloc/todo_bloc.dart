@@ -38,6 +38,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     resulting.fold((failure) => Error(message: _mapFailureToMessage(failure)),
         (stream) {
       streamSubscription = stream.listen((todos) {
+        print(todos);
         // final todoList = todos
         //     .map((todo) => Todo(
         //           id: todo.todo.id,
@@ -72,7 +73,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       //     (todoList) =>
       //         Loaded(todos: todoList.where((todo) => !todo.isDone).toList()));
     } else if (event is AddTodo) {
-      final addTodoEither = await addTodoToDb(Params(event.todo));
+      final addTodoEither = await addTodoToDb(TodoParams(event.todo));
       yield* addTodoEither.fold((failure) async* {
         yield Error(message: _mapFailureToMessage(failure));
       }, (_) async* {
@@ -84,7 +85,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         // }
       });
     } else if (event is TodoListUpdated) {
-      yield Loaded(todoWithtasklist: event.todosList);
+      yield TodoLoaded(todoWithtasklist: event.todosList);
     }
     // else if (event is ChangeTodoStatus) {
     //   final changeTodoEither = await toggleTodoStatus(Params(event.todo));

@@ -7,7 +7,9 @@ import '../../../../core/error/failures.dart';
 
 abstract class TaskListRepository {
   Future<Either<Failure, List<TasksList>>> getAllTaskLists();
+  Either<Failure, Stream<List<TasksList>>> watchAllTaskLists();
 
-  Future<Either<Failure, TasksList>> addTaskList(
-      TasksListTableCompanion taskList);
+  Future<Either<Failure, int>> addTaskList(TasksListTableCompanion taskList);
+
+  Either<Failure, void> deleteTaskList(TasksList tasksList);
 }

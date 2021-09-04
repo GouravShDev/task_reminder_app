@@ -20,8 +20,9 @@ class TodoPanel extends StatefulWidget {
 
 class _TodoPanelState extends State<TodoPanel> {
   Widget _buildTodoTile(
-      {required String title, required List<TodoWithTasksList> todos}) {
-    if (todos.isEmpty) return Container();
+      {required String title,
+      required List<TodoWithTasksList> todosWithTaskList}) {
+    if (todosWithTaskList.isEmpty) return Container();
     final Color borderColor = (title.contains('Overdue'))
         ? Theme.of(context).errorColor
         : Theme.of(context).primaryColor;
@@ -48,11 +49,12 @@ class _TodoPanelState extends State<TodoPanel> {
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             padding: EdgeInsets.only(top: 5, bottom: 10),
-            itemCount: todos.length,
+            itemCount: todosWithTaskList.length,
             itemBuilder: (context, index) {
+              final td = todosWithTaskList[index];
               return TodoCard(
-                todos[index],
-                key: Key(todos[index].todo.id.toString()),
+                td,
+                key: Key("${td.todo.toString()}${td.tasksList.toString()}"),
               );
             },
           ),
@@ -78,16 +80,14 @@ class _TodoPanelState extends State<TodoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<TodoBloc>(context).add(GetTodos());
+    // BlocProvider.of<TodoBloc>(context).add(GetTodos());
     return SafeArea(child: BlocBuilder<TodoBloc, TodoState>(
       builder: (context, state) {
         if (state is TodoInitial || state is Loading) {
           return LoadingWidget();
-        } else if (state is Loading) {
-          return LoadingWidget();
         } else if (state is Error) {
           return ErrorMessage(errorMessage: state.message);
-        } else if (state is Loaded) {
+        } else if (state is TodoLoaded) {
           final todosList = state.todoWithtasklist;
           return (todosList.isNotEmpty)
               ? _buildBody(todosList)
@@ -107,15 +107,15 @@ class _TodoPanelState extends State<TodoPanel> {
           children: [
             _buildTodoTile(
                 title: kOverdueTodo,
-                todos:
+                todosWithTaskList:
                     locator<TodoFilter>().filterTodos(todosList, kOverdueTodo)),
             _buildTodoTile(
                 title: kTodayTodo,
-                todos:
+                todosWithTaskList:
                     locator<TodoFilter>().filterTodos(todosList, kTodayTodo)),
             _buildTodoTile(
                 title: kUpcomingTodo,
-                todos: locator<TodoFilter>()
+                todosWithTaskList: locator<TodoFilter>()
                     .filterTodos(todosList, kUpcomingTodo)),
           ],
         ),

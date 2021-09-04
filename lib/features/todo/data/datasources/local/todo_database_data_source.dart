@@ -1,4 +1,4 @@
-import 'database/app_database.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 
 import '../../../../../core/error/exceptions.dart';
 
@@ -27,7 +27,17 @@ abstract class TodoDatabaseDataSource {
   /// Store [Task List] into the database
   ///
   /// Throws a [DatabaseException] if unable to store the data
-  Future storeTasksList(TasksListTableCompanion taskList);
+  Future<int> storeTasksList(TasksListTableCompanion taskList);
+
+  /// Delete [Task List] from the database
+  ///
+  /// Throws a [DatabaseException] if unable to store the data
+  void deleteTasksList(TasksList taskList);
+
+  /// Retrieve a Stream of [TasksList] from the database
+  ///
+  /// Throws a [DatabaseException] if the database is not available
+  Stream<List<TasksList>> watchTaskListsAsStream();
 }
 
 class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
@@ -46,7 +56,7 @@ class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
   }
 
   @override
-  Future storeTasksList(TasksListTableCompanion taskList) {
+  Future<int> storeTasksList(TasksListTableCompanion taskList) {
     return _appDatabase.tasksListDao.insertTasksList(taskList);
   }
 
@@ -58,5 +68,15 @@ class TodoDatabaseSourceImpl extends TodoDatabaseDataSource {
   @override
   Stream<List<TodoWithTasksList>> watchIncompTodosAsStream() {
     return _appDatabase.todoDao.watchIncompletedWithTaskListTodos();
+  }
+
+  @override
+  Stream<List<TasksList>> watchTaskListsAsStream() {
+    return _appDatabase.tasksListDao.watchAllTasksList();
+  }
+
+  @override
+  void deleteTasksList(TasksList taskList) {
+    return _appDatabase.tasksListDao.deleteTaskList(taskList);
   }
 }

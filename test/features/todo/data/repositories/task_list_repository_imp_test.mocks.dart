@@ -2,13 +2,13 @@
 // in todo_list/test/features/todo/data/repositories/task_list_repository_imp_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:todo_list/features/todo/data/datasources/local/todo_database_data_source.dart'
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart'
     as _i4;
-import 'package:todo_list/features/todo/domain/entities/task_list.dart' as _i3;
-import 'package:todo_list/features/todo/domain/entities/todo.dart' as _i2;
+import 'package:todo_list/features/todo/data/datasources/local/todo_database_data_source.dart'
+    as _i2;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -18,39 +18,46 @@ import 'package:todo_list/features/todo/domain/entities/todo.dart' as _i2;
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unnecessary_parenthesis
 
-class _FakeToDo_0 extends _i1.Fake implements _i2.ToDo {}
-
-class _FakeTaskList_1 extends _i1.Fake implements _i3.TaskList {}
-
 /// A class which mocks [TodoDatabaseDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTodoDatabaseDataSource extends _i1.Mock
-    implements _i4.TodoDatabaseDataSource {
+    implements _i2.TodoDatabaseDataSource {
   MockTodoDatabaseDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<List<_i2.ToDo>> getTodosList() =>
-      (super.noSuchMethod(Invocation.method(#getTodosList, []),
-              returnValue: Future<List<_i2.ToDo>>.value(<_i2.ToDo>[]))
-          as _i5.Future<List<_i2.ToDo>>);
+  _i3.Future<List<dynamic>> getAllTodos() =>
+      (super.noSuchMethod(Invocation.method(#getAllTodos, []),
+              returnValue: Future<List<dynamic>>.value(<dynamic>[]))
+          as _i3.Future<List<dynamic>>);
   @override
-  _i5.Future<_i2.ToDo> storeToDo(_i2.ToDo? todo) =>
-      (super.noSuchMethod(Invocation.method(#storeToDo, [todo]),
-              returnValue: Future<_i2.ToDo>.value(_FakeToDo_0()))
-          as _i5.Future<_i2.ToDo>);
+  _i3.Stream<List<_i4.TodoWithTasksList>> watchIncompTodosAsStream() =>
+      (super.noSuchMethod(Invocation.method(#watchIncompTodosAsStream, []),
+              returnValue: Stream<List<_i4.TodoWithTasksList>>.empty())
+          as _i3.Stream<List<_i4.TodoWithTasksList>>);
   @override
-  _i5.Future<List<_i3.TaskList>> getTaskLists() =>
-      (super.noSuchMethod(Invocation.method(#getTaskLists, []),
-              returnValue: Future<List<_i3.TaskList>>.value(<_i3.TaskList>[]))
-          as _i5.Future<List<_i3.TaskList>>);
+  _i3.Future<int> storeTodo(dynamic todo) =>
+      (super.noSuchMethod(Invocation.method(#storeTodo, [todo]),
+          returnValue: Future<int>.value(0)) as _i3.Future<int>);
   @override
-  _i5.Future<_i3.TaskList> storeTaskList(_i3.TaskList? taskList) =>
-      (super.noSuchMethod(Invocation.method(#storeTaskList, [taskList]),
-              returnValue: Future<_i3.TaskList>.value(_FakeTaskList_1()))
-          as _i5.Future<_i3.TaskList>);
+  _i3.Future<List<dynamic>> getAllTaskLists() =>
+      (super.noSuchMethod(Invocation.method(#getAllTaskLists, []),
+              returnValue: Future<List<dynamic>>.value(<dynamic>[]))
+          as _i3.Future<List<dynamic>>);
+  @override
+  _i3.Future<int> storeTasksList(dynamic taskList) =>
+      (super.noSuchMethod(Invocation.method(#storeTasksList, [taskList]),
+          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+  @override
+  void deleteTasksList(dynamic taskList) =>
+      super.noSuchMethod(Invocation.method(#deleteTasksList, [taskList]),
+          returnValueForMissingStub: null);
+  @override
+  _i3.Stream<List<dynamic>> watchTaskListsAsStream() => (super.noSuchMethod(
+      Invocation.method(#watchTaskListsAsStream, []),
+      returnValue: Stream<List<dynamic>>.empty()) as _i3.Stream<List<dynamic>>);
   @override
   String toString() => super.toString();
 }

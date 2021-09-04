@@ -11,10 +11,10 @@ class TodoInitial extends TodoState {}
 
 class Loading extends TodoState {}
 
-class Loaded extends TodoState {
+class TodoLoaded extends TodoState {
   final List<TodoWithTasksList> todoWithtasklist;
 
-  Loaded({
+  TodoLoaded({
     required this.todoWithtasklist,
   });
 

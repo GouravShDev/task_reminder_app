@@ -9,7 +9,7 @@ import '../../../../../core/usecases/usecase.dart';
 import '../../repositories/todos_repository.dart';
 import 'add_todo.dart';
 
-class ToggleTodoStatus implements UseCase<int, Params> {
+class ToggleTodoStatus implements UseCase<int, TodoParams> {
   final TodosRepository repository;
 
   final NotificationService notificationService;
@@ -17,7 +17,7 @@ class ToggleTodoStatus implements UseCase<int, Params> {
   ToggleTodoStatus(this.repository, this.notificationService);
 
   @override
-  Future<Either<Failure, int>> call(Params params) {
+  Future<Either<Failure, int>> call(TodoParams params) {
     final TasksCompanion td = params.todo.copyWith(isDone: params.todo.isDone);
     _cancelNotification(td);
     return repository.addTodo(td);
