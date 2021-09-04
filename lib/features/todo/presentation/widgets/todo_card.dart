@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moor/moor.dart' as mr;
 import 'package:provider/provider.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import '../../data/datasources/local/database/app_database.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../settings/provider/settings_provider.dart';

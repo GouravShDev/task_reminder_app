@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
-import 'package:todo_list/features/todo/presentation/widgets/task_list_add_edit_dialog.dart';
+import '../../data/datasources/local/database/app_database.dart';
+import '../blocs/taskList_bloc/task_list_bloc.dart';
+import 'task_list_add_edit_dialog.dart';
 
 class TasksListInput extends StatelessWidget {
   final Function(int) updateTaskListId;

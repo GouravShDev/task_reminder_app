@@ -3,10 +3,10 @@ import 'package:moor/ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:moor/moor.dart';
-import 'package:todo_list/features/todo/data/datasources/local/DAOs/tasks_list_dao.dart';
+import '../DAOs/tasks_list_dao.dart';
 import 'dart:io';
 
-import 'package:todo_list/features/todo/data/datasources/local/DAOs/todo_dao.dart';
+import '../DAOs/todo_dao.dart';
 
 part 'app_database.g.dart';
 

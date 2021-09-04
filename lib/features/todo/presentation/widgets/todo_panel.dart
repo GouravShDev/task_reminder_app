@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list/core/utils/todo_filter.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import '../../../../core/utils/todo_filter.dart';
+import '../../data/datasources/local/database/app_database.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 
 import '../../../../core/utils/constants.dart';

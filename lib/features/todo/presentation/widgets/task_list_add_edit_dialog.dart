@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import '../../data/datasources/local/database/app_database.dart';
 import 'package:moor/moor.dart' as mr;
-import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
+import '../blocs/taskList_bloc/task_list_bloc.dart';
 import 'package:provider/provider.dart';
 
 class TaskListAddEditDialog extends StatefulWidget {

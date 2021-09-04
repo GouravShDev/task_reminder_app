@@ -1,5 +1,5 @@
 import 'package:moor/moor.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import '../database/app_database.dart';
 
 part 'todo_dao.g.dart';
 

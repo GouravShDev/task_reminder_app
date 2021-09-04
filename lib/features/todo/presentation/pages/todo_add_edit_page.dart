@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moor/moor.dart' as mr;
 import 'package:provider/provider.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
-import 'package:todo_list/features/todo/presentation/widgets/task_list_input.dart';
+import '../../data/datasources/local/database/app_database.dart';
+import '../blocs/taskList_bloc/task_list_bloc.dart';
+import '../widgets/task_list_input.dart';
 import '../blocs/todo_bloc/todo_bloc.dart';
 import '../../../../core/services/notification_service.dart';
 

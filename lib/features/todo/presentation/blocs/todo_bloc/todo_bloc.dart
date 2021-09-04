@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/domain/usecases/todo/watch_incomp_todo_list.dart';
+import '../../../data/datasources/local/database/app_database.dart';
+import '../../../domain/usecases/todo/watch_incomp_todo_list.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../../domain/usecases/todo/add_todo.dart';

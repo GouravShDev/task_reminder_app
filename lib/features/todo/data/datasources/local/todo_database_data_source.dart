@@ -1,4 +1,4 @@
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import 'database/app_database.dart';
 
 import '../../../../../core/error/exceptions.dart';
 

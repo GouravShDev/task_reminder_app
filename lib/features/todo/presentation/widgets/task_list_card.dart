@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
-import 'package:todo_list/features/todo/presentation/widgets/task_list_add_edit_dialog.dart';
+import '../../data/datasources/local/database/app_database.dart';
+import '../blocs/taskList_bloc/task_list_bloc.dart';
+import 'task_list_add_edit_dialog.dart';
 
 class TasksListCard extends StatelessWidget {
   final TasksList tasksList;

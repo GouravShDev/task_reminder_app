@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/presentation/pages/task_list_page.dart';
+import '../features/todo/data/datasources/local/database/app_database.dart';
+import '../features/todo/presentation/pages/task_list_page.dart';
 import '../features/settings/ui/pages/Settings_page.dart';
 import '../features/todo/presentation/pages/todo_add_edit_page.dart';
 import '../features/todo/presentation/pages/todo_overview_page.dart';

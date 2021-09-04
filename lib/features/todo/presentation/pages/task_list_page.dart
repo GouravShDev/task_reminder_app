@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-import 'package:todo_list/features/todo/presentation/blocs/taskList_bloc/task_list_bloc.dart';
-import 'package:todo_list/features/todo/presentation/widgets/error_message.dart';
-import 'package:todo_list/features/todo/presentation/widgets/loading_widget.dart';
-import 'package:todo_list/features/todo/presentation/widgets/task_list_add_edit_dialog.dart';
-import 'package:todo_list/features/todo/presentation/widgets/task_list_card.dart';
+import '../../data/datasources/local/database/app_database.dart';
+import '../blocs/taskList_bloc/task_list_bloc.dart';
+import '../widgets/error_message.dart';
+import '../widgets/loading_widget.dart';
+import '../widgets/task_list_add_edit_dialog.dart';
+import '../widgets/task_list_card.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:moor/moor.dart';
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
+import '../../../data/datasources/local/database/app_database.dart';
 import '../../../../../core/services/notification_service.dart';
 
 import '../../../../../core/error/failures.dart';

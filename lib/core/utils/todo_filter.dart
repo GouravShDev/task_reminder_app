@@ -1,5 +1,4 @@
-import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
-
+import '../../features/todo/data/datasources/local/database/app_database.dart';
 import 'constants.dart';
 
 class TodoFilter {
