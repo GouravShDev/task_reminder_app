@@ -44,8 +44,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     if (event is WatchTodos) {
       yield TodoListLoading();
       final resulting = await watchIncompTodoList(NoParams());
-      resulting.fold((failure) => Error(message: _mapFailureToMessage(failure)),
-          (stream) {
+      yield* resulting.fold((failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      }, (stream) async* {
+        // yield TodoListLoading();
         streamSubscription = stream.listen((todos) {
           add(TodoListUpdated(todosList: todos));
         });

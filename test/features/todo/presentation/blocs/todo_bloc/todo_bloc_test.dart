@@ -50,19 +50,19 @@ void main() {
     expect(bloc.state, TodoInitial());
   });
 
-  void getTodosUsecaseTest(TodoEvent event, List<Todo> tTodosList) {
-    test('should get data from getTodosList usecase', () async {
-      //arrange
-      when(mockGetTodosList(any)).thenAnswer((_) async => Right(tTodosList));
+  // void getTodosUsecaseTest(TodoEvent event, Stream<List<Todo>> tTodosList) {
+  //   test('should get data from getTodosList usecase', () async {
+  //     //arrange
+  //     when(mockWatchIncompTodoList(any)).thenAnswer((_) async => Right(tTodosList));
 
-      //act
-      bloc.add(event);
-      await untilCalled(mockGetTodosList(any));
+  //     //act
+  //     bloc.add(event);
+  //     await untilCalled(mockGetTodosList(any));
 
-      //assert
-      verify(mockGetTodosList(NoParams()));
-    });
-  }
+  //     //assert
+  //     verify(mockGetTodosList(NoParams()));
+  //   });
+  // }
 
   group('GetTodos', () {
     final TodoWithTasksList td = TodoWithTasksList(
@@ -76,7 +76,7 @@ void main() {
     Stream<List<TodoWithTasksList>> tStream = Stream.fromIterable([
       [td]
     ]);
-    getTodosUsecaseTest(WatchTodos(), tTodosList);
+    // getTodosUsecaseTest(WatchTodos(), tTodosList);
 
     test(
         'should emit [Loading, Loaded] when data is gotten successfully and return only unfinished Todo',
@@ -100,10 +100,10 @@ void main() {
 
     test('should emit [Loading, Error] when getting data fails', () async {
       //arrange
-      when(mockGetTodosList(any))
-          .thenAnswer((_) async => left(DatabaseFailure()));
+      // when(mockGetTodosList(any))
+      //     .thenAnswer((_) async => left(DatabaseFailure()));
       when(mockWatchIncompTodoList(any))
-          .thenAnswer((_) async => Right(tStream));
+          .thenAnswer((_) async => Left(DatabaseFailure()));
 
       //assert later
       final expected = [
