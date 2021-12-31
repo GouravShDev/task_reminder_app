@@ -96,105 +96,114 @@ class _TodoAddEditPageState extends State<TodoAddEditPage> {
                 fontSize: mediaQuery.size.width * 0.05,
                 fontWeight: FontWeight.bold)),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    TextFormField(
-                      autofocus: true,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontSize: 20),
-                      decoration: InputDecoration(
-                        labelText: 'Task',
-                        labelStyle: TextStyle(fontSize: 16),
+      body: Listener(
+        onPointerDown: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextFormField(
+                        autofocus: true,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2!
+                            .copyWith(fontSize: 20),
+                        decoration: InputDecoration(
+                          labelText: 'Task',
+                          labelStyle: TextStyle(fontSize: 16),
+                        ),
+                        onChanged: (value) {
+                          _taskName = value;
+                        },
+                        initialValue: _taskName,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Task name cannot be empty';
+                          }
+                          return null;
+                        },
                       ),
-                      onChanged: (value) {
-                        _taskName = value;
-                      },
-                      initialValue: _taskName,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Task name cannot be empty';
-                        }
-                        return null;
-                      },
-                    ),
-                    DateInput(
-                      (DateTime date) {
-                        _selectedDate = date;
-                      },
-                      initValue: _selectedDate,
-                    ),
-                    TimeInput(
-                      (TimeOfDay time) {
-                        _selectedTime = time;
-                      },
-                      // _selectedDate Contains the todo time
-                      initValue: _selectedDate,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Notification Alert ' +
-                                (this._isNotificationOn ? 'On' : 'Off'),
-                            style: TextStyle(
-                              fontSize: 18,
+                      DateInput(
+                        (DateTime date) {
+                          _selectedDate = date;
+                        },
+                        initValue: _selectedDate,
+                      ),
+                      TimeInput(
+                        (TimeOfDay time) {
+                          _selectedTime = time;
+                        },
+                        // _selectedDate Contains the todo time
+                        initValue: _selectedDate,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Notification Alert ' +
+                                  (this._isNotificationOn ? 'On' : 'Off'),
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                this._isNotificationOn =
-                                    !this._isNotificationOn;
-                              });
-                            },
-                            icon: Icon(
-                              (_isNotificationOn)
-                                  ? Icons.notifications_active
-                                  : Icons.notifications,
-                              color: (_isNotificationOn)
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey,
+                            SizedBox(
+                              width: 10,
                             ),
-                          ),
-                        ],
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  this._isNotificationOn =
+                                      !this._isNotificationOn;
+                                });
+                              },
+                              icon: Icon(
+                                (_isNotificationOn)
+                                    ? Icons.notifications_active
+                                    : Icons.notifications,
+                                color: (_isNotificationOn)
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    TasksListInput(
-                      (int tasklistId) {
-                        _selectedTasksListId = tasklistId;
-                      },
-                      initValue: _selectedTasksListId,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(
-                        vertical: 30,
+                      TasksListInput(
+                        (int tasklistId) {
+                          _selectedTasksListId = tasklistId;
+                        },
+                        initValue: _selectedTasksListId,
                       ),
-                      child: ElevatedButton(
-                        onPressed: _submitForm,
-                        child: const Text('Done'),
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(
+                          vertical: 30,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: _submitForm,
+                          child: const Text('Done'),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

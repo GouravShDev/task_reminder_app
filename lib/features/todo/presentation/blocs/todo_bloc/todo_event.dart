@@ -6,7 +6,7 @@ abstract class TodoEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetTodos extends TodoEvent {}
+class WatchTodos extends TodoEvent {}
 
 class AddTodo extends TodoEvent {
   final TasksCompanion todo;

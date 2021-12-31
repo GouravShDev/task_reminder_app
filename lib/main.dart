@@ -47,7 +47,8 @@ class _MyAppState extends State<MyApp> {
             builder: (context, _) => MultiBlocProvider(
                 providers: [
                   BlocProvider(
-                    create: (context) => injector.locator<TodoBloc>(),
+                    create: (context) =>
+                        injector.locator<TodoBloc>()..add(WatchTodos()),
                   ),
                   BlocProvider(
                     create: (context) => injector.locator<TaskListBloc>(),
@@ -65,18 +66,6 @@ class _MyAppState extends State<MyApp> {
                   },
                 )),
           );
-          // )
-          // return BlocProvider(
-          //   create: (context) => injector.locator<TodoBloc>(),
-          //   child: MaterialApp(
-          //     title: 'ToDo List',
-          //     theme: ThemeData(
-          //       primarySwatch: Colors.blue,
-          //     ),
-          //     onGenerateRoute: _appRouter.onGenerateRoute,
-          //     home: TodoOverviewPage(),
-          //   ),
-          // );
         } else {
           // ToDo: Add loading screen
           return Container();

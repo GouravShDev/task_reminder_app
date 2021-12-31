@@ -73,67 +73,81 @@ void main() {
       td2.copyWith(id: 100),
       td2,
     ];
-    getTodosUsecaseTest(GetTodos(), tTodosList);
+    Stream<List<TodoWithTasksList>> tStream = Stream.fromIterable([
+      [td]
+    ]);
+    getTodosUsecaseTest(WatchTodos(), tTodosList);
 
     test(
         'should emit [Loading, Loaded] when data is gotten successfully and return only unfinished Todo',
         () async {
       //arrange
       when(mockGetTodosList(any)).thenAnswer((_) async => Right(tTodosList));
+      when(mockWatchIncompTodoList(any))
+          .thenAnswer((_) async => Right(tStream));
 
       //assert later
       final expected = [
-        Loading(),
+        TodoListLoading(),
         TodoLoaded(todoWithtasklist: [td]),
       ];
 
       expectLater(bloc.stream, emitsInOrder(expected));
 
       //act
-      bloc.add(GetTodos());
+      bloc.add(WatchTodos());
     });
 
     test('should emit [Loading, Error] when getting data fails', () async {
       //arrange
       when(mockGetTodosList(any))
           .thenAnswer((_) async => left(DatabaseFailure()));
+      when(mockWatchIncompTodoList(any))
+          .thenAnswer((_) async => Right(tStream));
 
       //assert later
       final expected = [
-        Loading(),
+        TodoListLoading(),
         Error(message: kErrorMessage),
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 
       //act
-      bloc.add(GetTodos());
+      bloc.add(WatchTodos());
     });
   });
   group('AddTodo', () {
     final TasksCompanion tTodo =
         Todo.fromJson(json.decode(Fixture('todos.json')))
-            .copyWith(due: DateTime.now().add(Duration(hours: 1))).toCompanion(true);
+            .copyWith(due: DateTime.now().add(Duration(hours: 1)))
+            .toCompanion(true);
 
-            final TodoWithTasksList td = TodoWithTasksList(
-        todo: Todo.fromJson(json.decode(Fixture('todos.json'))).copyWith(due: tTodo.due.value),
+    final TodoWithTasksList td = TodoWithTasksList(
+        todo: Todo.fromJson(json.decode(Fixture('todos.json')))
+            .copyWith(due: tTodo.due.value),
         tasksList: TasksList(id: 1, name: "Default"));
+    Stream<List<TodoWithTasksList>> tTodosListStream = Stream.fromIterable([
+      [td]
+    ]);
     test(
-        'should emit [Loading, Loaded,Loaded(withNewTodo)] when data is gotten successfully',
+        'should emit [Loading, Loaded(withNewTodo)] when data is gotten successfully',
         () async {
       //arrange
       when(mockGetTodosList(any)).thenAnswer((_) async => Right([]));
       when(mockAddTodoToDb(any)).thenAnswer((_) async => Right(tTodo.id.value));
+      when(mockWatchIncompTodoList(any))
+          .thenAnswer((_) async => Right(tTodosListStream));
 
       //assert later
       final expected = [
-        Loading(),
-        TodoLoaded(todoWithtasklist: []),
+        TodoListLoading(),
+        // TodoLoaded(todoWithtasklist: []),
         TodoLoaded(todoWithtasklist: [td]),
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 
       //act
-      bloc.add(GetTodos());
+      bloc.add(WatchTodos());
       bloc.add(AddTodo(tTodo));
     });
 
@@ -144,6 +158,7 @@ void main() {
 
       //assert later
       final expected = [
+        TodoListLoading(),
         Error(message: kErrorMessage),
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
@@ -152,46 +167,4 @@ void main() {
       bloc.add(AddTodo(tTodo));
     });
   });
-  // group('ChangeTodoStatus', () {
-  //   final ToDo tTodo =
-  //       ToDoModel.fromDatabaseJson(json.decode(Fixture('todos.json')));
-  //   final ToDo tTodoToggled = tTodo.copyWith(isDone: !tTodo.isDone);
-
-  //   test(
-  //       'should emit [Loading, Loaded,Loaded(withUpdateTodo)] when data is gotten successfully ',
-  //       () async {
-  //     //arrange
-  //     when(mockGetTodosList(any)).thenAnswer((_) async => Right([tTodo]));
-
-  //     when(mockToggleTodoStatus(any))
-  //         .thenAnswer((_) async => Right(tTodoToggled));
-
-  //     //assert later
-  //     final expected = [
-  //       Loading(),
-  //       TodoLoaded(todos: [tTodo]),
-  //       TodoLoaded(todos: []),
-  //     ];
-  //     expectLater(bloc.stream, emitsInOrder(expected));
-
-  //     //act
-  //     bloc.add(GetTodos());
-  //     bloc.add(ChangeTodoStatus(tTodo));
-  //   });
-
-  //   test('should emit [Loading, Error] when getting data fails', () async {
-  //     //arrange
-  //     when(mockToggleTodoStatus(any))
-  //         .thenAnswer((_) async => left(DatabaseFailure()));
-
-  //     //assert later
-  //     final expected = [
-  //       Error(message: kErrorMessage),
-  //     ];
-  //     expectLater(bloc.stream, emitsInOrder(expected));
-
-  //     //act
-  //     bloc.add(ChangeTodoStatus(tTodo));
-  //   });
-  // });
 }

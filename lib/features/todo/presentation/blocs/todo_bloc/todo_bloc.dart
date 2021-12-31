@@ -29,31 +29,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     required this.toggleTodoStatus,
     required this.watchIncompTodoList,
     // required this.notificationService,
-  }) : super(TodoInitial()) {
-    _initStream();
-  }
-
-  void _initStream() async {
-    final resulting = await watchIncompTodoList(NoParams());
-    resulting.fold((failure) => Error(message: _mapFailureToMessage(failure)),
-        (stream) {
-      streamSubscription = stream.listen((todos) {
-        print(todos);
-        // final todoList = todos
-        //     .map((todo) => Todo(
-        //           id: todo.todo.id,
-        //           hasAlert: todo.todo.hasAlert,
-        //           isDone: todo.todo.isDone,
-        //           name: todo.todo.name,
-        //           repeatMode: todo.todo.repeatMode,
-        //           tasklistId: todo.todo.tasklistId,
-        //           due: todo.todo.due,
-        //         ))
-        //     .toList();
-        add(TodoListUpdated(todosList: todos));
-      });
-    });
-  }
+  }) : super(TodoInitial());
 
   @override
   Future<void> close() {
@@ -65,73 +41,25 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Stream<TodoState> mapEventToState(
     TodoEvent event,
   ) async* {
-    if (event is GetTodos) {
-      // yield Loading();
-      // final getTodoEither = await getTodosList(NoParams());
-      // yield getTodoEither.fold(
-      //     (failure) => Error(message: _mapFailureToMessage(failure)),
-      //     (todoList) =>
-      //         Loaded(todos: todoList.where((todo) => !todo.isDone).toList()));
+    if (event is WatchTodos) {
+      yield TodoListLoading();
+      final resulting = await watchIncompTodoList(NoParams());
+      resulting.fold((failure) => Error(message: _mapFailureToMessage(failure)),
+          (stream) {
+        streamSubscription = stream.listen((todos) {
+          add(TodoListUpdated(todosList: todos));
+        });
+      });
     } else if (event is AddTodo) {
+      yield TodoListLoading();
       final addTodoEither = await addTodoToDb(TodoParams(event.todo));
       yield* addTodoEither.fold((failure) async* {
         yield Error(message: _mapFailureToMessage(failure));
-      }, (_) async* {
-        // _scheduleNotification(todo);
-        // final currentState = state;
-        // if (currentState is Loaded) {
-        //   final List<Todo> currentList = List.from(currentState.todos);
-        //   yield Loaded(todos: _replaceTodoAndUpdatelist(currentList, todo));
-        // }
-      });
+      }, (_) async* {});
     } else if (event is TodoListUpdated) {
       yield TodoLoaded(todoWithtasklist: event.todosList);
     }
-    // else if (event is ChangeTodoStatus) {
-    //   final changeTodoEither = await toggleTodoStatus(Params(event.todo));
-    //   yield* changeTodoEither.fold((failure) async* {
-    //     yield Error(message: _mapFailureToMessage(failure));
-    //   }, (todo) async* {
-    //     final currentState = state;
-    //     // _cancelNotification(todo);
-    //     if (currentState is Loaded) {
-    //       final List<Todo> currentList = List.from(currentState.todos);
-    //       yield Loaded(
-    //           todos: _replaceTodoAndUpdatelist(currentList, todo)
-    //               .where((element) => !element.isDone)
-    //               .toList());
-    //     }
-    //   });
-    // }
   }
-
-  // void _scheduleNotification(Todo td) {
-  //   if (td.hasAlert && td.due.isAfter(DateTime.now())) {
-  //     notificationService.scheduledNotification(
-  //         id: td.id!,
-  //         message: formatDate(DateTime(2019, 08, 1, td.due.hour, td.due.minute),
-  //             [hh, ':', nn, " ", am]).toString(),
-  //         title: td.name,
-  //         scheduledDate: td.due);
-  //   }
-  // }
-
-  // void _cancelNotification(Todo td) {
-  //   if (td.hasAlert) {
-  //     notificationService.cancelNotification(td.id!);
-  //   }
-  // }
-
-  // List<Todo> _replaceTodoAndUpdatelist(List<Todo> todoList, Todo newTodo) {
-  //   final index = todoList.indexWhere((todoItem) => todoItem.id == newTodo.id);
-  //   if (index != -1) {
-  //     todoList[index] = newTodo;
-  //   } else {
-  //     todoList.add(newTodo);
-  //     todoList.sort((a, b) => a.due.compareTo(b.due));
-  //   }
-  //   return todoList;
-  // }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

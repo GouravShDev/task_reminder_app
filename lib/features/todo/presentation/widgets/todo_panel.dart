@@ -81,22 +81,24 @@ class _TodoPanelState extends State<TodoPanel> {
   @override
   Widget build(BuildContext context) {
     // BlocProvider.of<TodoBloc>(context).add(GetTodos());
-    return SafeArea(child: BlocBuilder<TodoBloc, TodoState>(
-      builder: (context, state) {
-        if (state is TodoInitial || state is Loading) {
-          return LoadingWidget();
-        } else if (state is Error) {
-          return ErrorMessage(errorMessage: state.message);
-        } else if (state is TodoLoaded) {
-          final todosList = state.todoWithtasklist;
-          return (todosList.isNotEmpty)
-              ? _buildBody(todosList)
-              : InitialMessage();
-        } else {
-          return Container();
-        }
-      },
-    ));
+    return SafeArea(
+      child: BlocBuilder<TodoBloc, TodoState>(
+        builder: (context, state) {
+          if (state is TodoInitial || state is TodoListLoading) {
+            return LoadingWidget();
+          } else if (state is Error) {
+            return ErrorMessage(errorMessage: state.message);
+          } else if (state is TodoLoaded) {
+            final todosList = state.todoWithtasklist;
+            return (todosList.isNotEmpty)
+                ? _buildBody(todosList)
+                : InitialMessage();
+          } else {
+            return Container();
+          }
+        },
+      ),
+    );
   }
 
   Widget _buildBody(List<TodoWithTasksList> todosList) {

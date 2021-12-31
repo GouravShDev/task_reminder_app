@@ -9,7 +9,7 @@ abstract class TodoState extends Equatable {
 
 class TodoInitial extends TodoState {}
 
-class Loading extends TodoState {}
+class TodoListLoading extends TodoState {}
 
 class TodoLoaded extends TodoState {
   final List<TodoWithTasksList> todoWithtasklist;
