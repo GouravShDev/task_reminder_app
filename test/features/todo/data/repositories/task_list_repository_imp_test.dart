@@ -56,7 +56,7 @@ void main() {
 
   group('addTodo', () {
     final TasksList taskList = TasksList(name: 'name', id: 1);
-    test('should return taskList when insert to datasource is successful',
+    test('should return taskList id when insert to datasource is successful',
         () async {
       // arrange
       when(mockTodoDatabaseDataSource.storeTasksList(any))
@@ -69,7 +69,7 @@ void main() {
       // assert
       verify(mockTodoDatabaseDataSource
           .storeTasksList(TasksListTableCompanion(name: Value(taskList.name))));
-      expect(result, Right((taskList)));
+      expect(result, Right((taskList.id)));
     });
 
     test(

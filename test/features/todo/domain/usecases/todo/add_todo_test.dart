@@ -9,7 +9,8 @@ import 'package:todo_list/features/todo/data/datasources/local/database/app_data
 import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart';
 import 'package:todo_list/features/todo/domain/usecases/todo/add_todo.dart';
 
-import 'toggle_todo_status_test.mocks.dart';
+import 'add_todo_test.mocks.dart';
+
 
 @GenerateMocks([TodosRepository, NotificationService])
 void main() {

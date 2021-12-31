@@ -1,0 +1,47 @@
+targets:
+  $default:
+    builders:
+      injectable:
+        enabled: false
+      injectable_generator|injectable_config_builder:
+        enabled: false
+      injectable_generator|injectable_builder:
+        enabled: false
+        generate_for:
+          - lib/**
+      json_serializable:
+        options:
+          any_map: true
+          explicit_to_json: true
+      moor_generator:
+        options:
+          generate_connect_constructor: false
+        enabled: true
+      moor_generator|moor_generator_not_shared:
+        enabled: true
+        options:
+          generate_connect_constructor: true
+      moor_generator|preparing_builder:
+        enabled: false
+        options:
+          generate_connect_constructor: true
+      mockito|mockBuilder:
+        enabled: false
+
+  run_built_value:
+    dependencies: [ 'mockito']
+    builders:
+      json_serializable:
+        enabled: false
+      injectable:
+        enabled: true
+      injectable_generator|injectable_builder:
+        enabled: true
+      freezed:
+        enabled: false
+      moor_generator:
+        enabled: false
+      moor_generator|preparing_builder:
+        enabled: false
+      copy_with_extension_gen|copy_with_extension_gen:
+        enabled: false

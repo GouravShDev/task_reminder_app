@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:todo_list/core/usecases/usecase.dart';
+import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart';
 import 'package:todo_list/features/todo/domain/usecases/todo/get_todo_list.dart';
 
@@ -17,16 +18,15 @@ void main() {
     mockTodosRepository = MockTodosRepository();
     usecase = GetTodosList(mockTodosRepository);
   });
-s
-  final List<ToDo> todos = [
-    ToDo(
+  final List<Todo> todos = [
+    Todo(
       id: 1,
       name: 'name',
       due: DateTime.now(),
       isDone: false,
       hasAlert: true,
       repeatMode: 0,
-      taskListId: 0,
+      tasklistId: 0,
     )
   ];
   test('should get todo from the repository', () async {
