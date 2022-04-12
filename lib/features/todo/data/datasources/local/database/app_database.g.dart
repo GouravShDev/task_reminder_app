@@ -129,16 +129,8 @@ class Todo extends DataClass implements Insertable<Todo> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(
-              isDone.hashCode,
-              $mrjc(
-                  due.hashCode,
-                  $mrjc(hasAlert.hashCode,
-                      $mrjc(repeatMode.hashCode, tasklistId.hashCode)))))));
+  int get hashCode =>
+      Object.hash(id, name, isDone, due, hasAlert, repeatMode, tasklistId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -260,50 +252,58 @@ class TasksCompanion extends UpdateCompanion<Todo> {
 }
 
 class $TasksTable extends Tasks with TableInfo<$TasksTable, Todo> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TasksTable(this._db, [this._alias]);
+  $TasksTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true);
   final VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
+  @override
   late final GeneratedColumn<bool?> isDone = GeneratedColumn<bool?>(
       'is_done', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (is_done IN (0, 1))',
       defaultValue: Constant(false));
   final VerificationMeta _dueMeta = const VerificationMeta('due');
+  @override
   late final GeneratedColumn<DateTime?> due = GeneratedColumn<DateTime?>(
       'due', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _hasAlertMeta = const VerificationMeta('hasAlert');
+  @override
   late final GeneratedColumn<bool?> hasAlert = GeneratedColumn<bool?>(
       'has_alert', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (has_alert IN (0, 1))',
       defaultValue: Constant(false));
   final VerificationMeta _repeatModeMeta = const VerificationMeta('repeatMode');
+  @override
   late final GeneratedColumn<int?> repeatMode = GeneratedColumn<int?>(
       'repeat_mode', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultValue: Constant(0));
   final VerificationMeta _tasklistIdMeta = const VerificationMeta('tasklistId');
+  @override
   late final GeneratedColumn<int?> tasklistId = GeneratedColumn<int?>(
       'tasklist_id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       $customConstraints:
           'DEFAULT 0 REFERENCES tasks_list_table(id) ON DELETE CASCADE',
@@ -360,13 +360,13 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Todo> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Todo map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Todo.fromData(data, _db,
+    return Todo.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $TasksTable createAlias(String alias) {
-    return $TasksTable(_db, alias);
+    return $TasksTable(attachedDatabase, alias);
   }
 }
 
@@ -430,7 +430,7 @@ class TasksList extends DataClass implements Insertable<TasksList> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, name.hashCode));
+  int get hashCode => Object.hash(id, name);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -489,21 +489,24 @@ class TasksListTableCompanion extends UpdateCompanion<TasksList> {
 
 class $TasksListTableTable extends TasksListTable
     with TableInfo<$TasksListTableTable, TasksList> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TasksListTableTable(this._db, [this._alias]);
+  $TasksListTableTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 20),
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name];
@@ -532,13 +535,13 @@ class $TasksListTableTable extends TasksListTable
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   TasksList map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return TasksList.fromData(data, _db,
+    return TasksList.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $TasksListTableTable createAlias(String alias) {
-    return $TasksListTableTable(_db, alias);
+    return $TasksListTableTable(attachedDatabase, alias);
   }
 }
 
