@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:todo_list/core/error/failures.dart';
-import 'package:todo_list/core/usecases/usecase.dart';
 import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import 'package:todo_list/features/todo/domain/usecases/todo/add_todo.dart';
 import 'package:todo_list/features/todo/domain/usecases/todo/get_todo_list.dart';

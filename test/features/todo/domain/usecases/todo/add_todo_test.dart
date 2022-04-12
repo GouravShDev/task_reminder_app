@@ -4,13 +4,11 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 import 'package:todo_list/core/services/notification_service.dart';
-import 'package:todo_list/core/usecases/usecase.dart';
 import 'package:todo_list/features/todo/data/datasources/local/database/app_database.dart';
 import 'package:todo_list/features/todo/domain/repositories/todos_repository.dart';
 import 'package:todo_list/features/todo/domain/usecases/todo/add_todo.dart';
 
 import 'add_todo_test.mocks.dart';
-
 
 @GenerateMocks([TodosRepository, NotificationService])
 void main() {
